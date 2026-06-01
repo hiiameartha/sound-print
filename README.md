@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Life is Fine
 
-## Getting Started
+以 Next.js App Router、TypeScript 與 Tailwind CSS 建置的生活紀錄平台基礎架構。
 
-First, run the development server:
+## 技術棧
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- [Next.js](https://nextjs.org)（App Router）
+- TypeScript
+- Tailwind CSS v4
+- [next-themes](https://github.com/pacocoursey/next-themes)（深色模式）
+- [Zustand](https://github.com/pmndrs/zustand)（UI 狀態）
+
+## 專案結構
+
+```
+src/
+├── app/           # App Router 路由與全域樣式
+├── components/    # 共用 UI 元件（Layout、Theme）
+├── features/      # 功能模組（Feature-based）
+├── hooks/         # 自訂 React Hooks
+├── services/      # API 與外部服務
+├── store/         # Zustand 狀態
+├── lib/           # 工具函式、SEO metadata
+├── types/         # 共用型別
+└── constants/     # 站點常數、導覽設定
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 開始使用
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env.local
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+開啟 [http://localhost:3000](http://localhost:3000)。
 
-## Learn More
+## 環境變數
 
-To learn more about Next.js, take a look at the following resources:
+| 變數 | 說明 |
+|------|------|
+| `NEXT_PUBLIC_SITE_URL` | 站點正式網址（用於 SEO、sitemap） |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 指令
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev    # 開發伺服器
+npm run build  # 正式建置
+npm run start  # 啟動正式伺服器
+npm run lint   # ESLint
+```
