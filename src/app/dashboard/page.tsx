@@ -4,22 +4,20 @@ import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
   title: "人生儀表板",
-  description: "檢視六大維度評分與人生總分儀表板。",
+  description: "Life.EXE KPI 儀表板：總分、六大維度、雷達圖與趨勢分析。",
   path: "/dashboard",
 });
 
 export default function DashboardPage() {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-      <header className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          人生儀表板
-        </h1>
-        <p className="mt-3 text-muted-foreground">
-          你的六大維度評分與總覽
-        </p>
-      </header>
-      <DashboardContent />
-    </section>
+    <div className="relative min-h-[calc(100dvh-4rem)]">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(6,182,212,0.08),transparent_50%)]"
+        aria-hidden
+      />
+      <section className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <DashboardContent />
+      </section>
+    </div>
   );
 }

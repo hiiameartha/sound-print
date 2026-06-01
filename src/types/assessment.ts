@@ -13,3 +13,5 @@ export type AssessmentResult = AssessmentScores & {
   averageScore: number;
   completedAt: string;
 };
+
+export type AssessmentHistory = AssessmentResult[];
