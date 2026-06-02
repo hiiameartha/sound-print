@@ -15,6 +15,7 @@ import {
   calculateAverageScore,
   calculateTotalScore,
 } from "@/features/assessment/lib/calculate-score";
+import { getOrCreateLocalUserId, LifeRecordsService } from "@/features/life-records";
 import {
   assessmentSchema,
   type AssessmentFormValues,
@@ -25,6 +26,7 @@ import { cn } from "@/lib/utils";
 export function AssessmentForm() {
   const router = useRouter();
   const setResult = useAssessmentStore((state) => state.setResult);
+  const lifeRecordsService = useMemo(() => new LifeRecordsService(), []);
 
   const {
     control,
@@ -47,9 +49,15 @@ export function AssessmentForm() {
     [watchedScores],
   );
 
-  const onSubmit = (data: AssessmentFormValues) => {
+  const onSubmit = async (data: AssessmentFormValues) => {
     const result = buildAssessmentResult(data);
     setResult(result);
+    try {
+      const userId = getOrCreateLocalUserId();
+      await lifeRecordsService.saveFromAssessment(userId, result);
+    } catch {
+      // Supabase 未設定 / 連線失敗時，不阻擋使用者進入儀表板
+    }
     router.push("/dashboard");
   };
 

@@ -3,4 +3,4 @@
  * 各功能請建立獨立子目錄，例如 features/journal/
  */
 
-export {};
+export { LifeRecordsPanel, useLifeRecords } from "@/features/life-records";

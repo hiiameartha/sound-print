@@ -1,24 +1,18 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardHeader } from "@/features/dashboard/components/DashboardHeader";
 import { DimensionCardsGrid } from "@/features/dashboard/components/DimensionCardsGrid";
 import { RadarChartPanel } from "@/features/dashboard/components/RadarChartPanel";
 import { TotalScoreCard } from "@/features/dashboard/components/TotalScoreCard";
-import { TrendChartPanel } from "@/features/dashboard/components/TrendChartPanel";
+import { LifeRecordsPanel } from "@/features/life-records";
 import { LifeCommentaryPanel } from "@/features/life-commentary";
 import { useAssessmentStore } from "@/store/assessment-store";
 
 export function DashboardContent() {
   const router = useRouter();
   const result = useAssessmentStore((state) => state.result);
-  const history = useAssessmentStore((state) => state.history);
-
-  const trendHistory = useMemo(() => {
-    if (history.length > 0) return history;
-    return result ? [result] : [];
-  }, [history, result]);
 
   useEffect(() => {
     if (!result) {
@@ -47,7 +41,7 @@ export function DashboardContent() {
 
       <DimensionCardsGrid result={result} />
 
-      <TrendChartPanel history={trendHistory} />
+      <LifeRecordsPanel />
 
       <LifeCommentaryPanel result={result} />
     </div>
