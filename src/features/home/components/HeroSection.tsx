@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Terminal } from "lucide-react";
+import { ArrowRight, Music2 } from "lucide-react";
 import { HeroAnimatedBackground } from "@/features/home/components/HeroAnimatedBackground";
-import { HeroKpiPanel } from "@/features/home/components/HeroKpiPanel";
+import { HeroPersonalityPreview } from "@/features/home/components/HeroPersonalityPreview";
 import { cn } from "@/lib/utils";
 
 const containerVariants: Variants = {
@@ -46,13 +46,8 @@ export function HeroSection() {
                 "dark:from-cyan-400/15 dark:to-violet-400/15",
               )}
             >
-              <motion.div
-                className="absolute inset-0 rounded-2xl ring-1 ring-cyan-500/30"
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-              />
-              <Terminal
-                className="h-10 w-10 text-cyan-600 dark:text-cyan-400"
+              <Music2
+                className="h-10 w-10 text-[#1DB954]"
                 strokeWidth={1.5}
                 aria-hidden
               />
@@ -63,31 +58,19 @@ export function HeroSection() {
             variants={itemVariants}
             className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
           >
-            <span className="bg-linear-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
-              Life
-            </span>
-            <span className="font-mono text-cyan-600 dark:text-cyan-400">
-              .EXE
-            </span>
+            Life is Fine
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="mt-3 font-mono text-sm tracking-widest text-cyan-600/90 uppercase dark:text-cyan-400/90"
+            className="mt-4 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            人生執行中
-          </motion.p>
-
-          <motion.p
-            variants={itemVariants}
-            className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl"
-          >
-            人生不是只有工作，也值得有儀表板
+            Tell me what you listen to, and I&apos;ll tell you who you are.
           </motion.p>
 
           <motion.div variants={itemVariants} className="mt-10">
             <MotionLink
-              href="/assessment"
+              href="/spotify"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
@@ -96,7 +79,7 @@ export function HeroSection() {
                 "transition-shadow hover:shadow-cyan-500/25 dark:hover:shadow-cyan-400/20",
               )}
             >
-              開始檢測人生
+              用 Spotify 解鎖音樂人格
               <ArrowRight
                 className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
                 aria-hidden
@@ -105,14 +88,9 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          className="w-full flex-shrink-0 lg:w-auto"
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <HeroKpiPanel />
-        </motion.div>
+        <div className="w-full shrink-0 lg:w-auto">
+          <HeroPersonalityPreview />
+        </div>
       </div>
     </section>
   );

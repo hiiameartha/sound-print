@@ -1,26 +1,24 @@
-export type LifeTier = {
-  code: string;
-  label: string;
-  accent: string;
-};
+import type { ArchetypeMatch } from "@/features/personality/types/archetype";
+import type { PersonalityTraitKey } from "@/features/personality/types/traits";
 
-export type ShareCardCommentary = {
-  humorousAnalysis: string;
-  encouragement: string;
+export type ShareCardRadarPoint = {
+  key: PersonalityTraitKey;
+  label: string;
+  emoji: string;
+  score: number;
+  color: string;
 };
 
 export type ShareCardData = {
-  totalScore: number;
-  bestLabel: string;
-  bestScore: number;
-  weakestLabel: string;
-  weakestScore: number;
-  title: string;
-  completedAt: string;
-  percent: number;
-  tier: LifeTier;
-  hookLine: string;
-  gap: number;
+  analyzedAt: string;
+  displayName: string;
+  primaryArchetype: ArchetypeMatch;
+  secondaryArchetype: ArchetypeMatch;
+  primaryShortName: string;
+  yearlyTitle: string;
+  humorousCommentary: string | null;
+  toxicCommentary: string | null;
   hasAiCommentary: boolean;
-  commentary: ShareCardCommentary;
+  radar: ShareCardRadarPoint[];
+  accent: string;
 };

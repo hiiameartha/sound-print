@@ -4,10 +4,7 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Copy, Download, Loader2, Share2 } from "lucide-react";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
 import { SHARE_CARD_WIDTH } from "@/features/share/constants";
-import {
-  buildShareCardData,
-  getFallbackTitle,
-} from "@/features/share/lib/extract-share-stats";
+import { buildShareCardData } from "@/features/share/lib/build-share-card-data";
 import {
   downloadShareCardPng,
   measureShareCard,
@@ -22,36 +19,45 @@ import {
 } from "@/features/share/lib/share-links";
 import { ShareCard } from "@/features/share/components/ShareCard";
 import { SITE } from "@/constants/site";
-import { useLifeCommentaryStore } from "@/store/life-commentary-store";
-import type { AssessmentResult } from "@/types/assessment";
+import { usePersonalityCommentaryStore } from "@/store/personality-commentary-store";
+import type { PersonalityProfile } from "@/features/personality/types/personality-profile";
+import type { PersonalityCommentary } from "@/types/personality-commentary";
 import { cn } from "@/lib/utils";
 
 const PREVIEW_MAX_WIDTH = 360;
 const PREVIEW_SCALE = PREVIEW_MAX_WIDTH / SHARE_CARD_WIDTH;
 
 type SharePanelProps = {
-  result: AssessmentResult;
+  profile: PersonalityProfile;
+  /** 從 DB 載入的歷史報告評論（/share?report=） */
+  initialCommentary?: PersonalityCommentary | null;
+  reportId?: string | null;
 };
 
-export function SharePanel({ result }: SharePanelProps) {
+export function SharePanel({
+  profile,
+  initialCommentary = null,
+  reportId: _reportId,
+}: SharePanelProps) {
   const exportRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState(SHARE_CARD_WIDTH);
   const [isExporting, setIsExporting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const commentary = useLifeCommentaryStore((s) => s.commentary);
-  const sourceCompletedAt = useLifeCommentaryStore((s) => s.sourceCompletedAt);
+  const storeCommentary = usePersonalityCommentaryStore((s) => s.commentary);
+  const sourceAnalyzedAt = usePersonalityCommentaryStore(
+    (s) => s.sourceAnalyzedAt,
+  );
 
-  const commentaryReady =
-    sourceCompletedAt === result.completedAt && commentary !== null;
+  const storeCommentaryReady =
+    sourceAnalyzedAt === profile.analyzedAt && storeCommentary !== null;
 
-  const title = commentaryReady ? commentary.title : getFallbackTitle(result);
-
-  const aiCommentary = commentaryReady ? commentary : null;
+  const effectiveCommentary = initialCommentary ?? (storeCommentaryReady ? storeCommentary : null);
+  const commentaryReady = effectiveCommentary !== null;
 
   const cardData = useMemo(
-    () => buildShareCardData(result, title, aiCommentary),
-    [result, title, aiCommentary]
+    () => buildShareCardData(profile, effectiveCommentary),
+    [profile, effectiveCommentary],
   );
 
   const shareText = useMemo(() => buildShareText(cardData), [cardData]);
@@ -91,7 +97,7 @@ export function SharePanel({ result }: SharePanelProps) {
         if (!shared) {
           const size = await downloadShareCardPng(node);
           setStatusMessage(
-            `此裝置不支援直接分享，已改為下載 ${size.width}×${size.height} PNG`
+            `此裝置不支援直接分享，已改為下載 ${size.width}×${size.height} PNG`,
           );
         } else {
           setStatusMessage("已開啟系統分享");
@@ -102,7 +108,7 @@ export function SharePanel({ result }: SharePanelProps) {
         setIsExporting(false);
       }
     },
-    [shareText]
+    [shareText],
   );
 
   const handleCopyText = useCallback(async () => {
@@ -128,8 +134,8 @@ export function SharePanel({ result }: SharePanelProps) {
 
   return (
     <DashboardCard
-      title="分享人生報告"
-      subtitle="1080px 寬 · 高度隨內容 · 一鍵下載 PNG"
+      title="分享人格報告"
+      subtitle="1080px 寬 · 內嵌分享卡 · 一鍵下載 PNG"
     >
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="mx-auto shrink-0 lg:mx-0">
@@ -157,15 +163,15 @@ export function SharePanel({ result }: SharePanelProps) {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          {!cardData.hasAiCommentary && (
+          {!commentaryReady && (
             <p className="text-xs text-amber-600 dark:text-amber-400">
-              AI 評論尚未就緒，分享卡會顯示佔位提示；產生後請重新下載 PNG。
+              AI 年度稱號與吐槽尚未就緒；產生後請重新下載 PNG 以更新分享卡。
             </p>
           )}
-          <p className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-3 font-mono text-xs text-cyan-700 dark:text-cyan-300">
-            {cardData.tier.code} · {cardData.tier.label} · {cardData.percent}%
+          <p className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-3 text-sm text-cyan-800 dark:text-cyan-300">
+            🎧 {cardData.primaryShortName}
             <span className="mx-2 text-muted-foreground">|</span>
-            {cardData.hookLine}
+            {cardData.yearlyTitle}
           </p>
 
           <div className="flex flex-wrap gap-2">
@@ -266,7 +272,7 @@ function ActionButton({
         variant === "primary" &&
           "border-cyan-500/40 bg-cyan-500/10 text-cyan-700 hover:bg-cyan-500/20 dark:text-cyan-300",
         variant === "default" && "border-border text-foreground hover:bg-muted",
-        className
+        className,
       )}
     >
       {icon}

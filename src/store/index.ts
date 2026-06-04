@@ -1,3 +1,3 @@
-export { useAssessmentStore } from "./assessment-store";
-export { useLifeCommentaryStore } from "./life-commentary-store";
+export { usePersonalityCommentaryStore } from "./personality-commentary-store";
+export { usePersonalityReportStore } from "./personality-report-store";
 export { useUiStore } from "./ui-store";

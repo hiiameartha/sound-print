@@ -35,7 +35,7 @@ export async function captureShareCardPng(
 
 export async function downloadShareCardPng(
   element: HTMLElement,
-  filename = "life-exe-report.png",
+  filename = "life-is-fine-personality-report.png",
 ): Promise<ShareCardExportSize> {
   const { dataUrl, size } = await captureShareCardPng(element);
   const link = document.createElement("a");
@@ -52,14 +52,16 @@ export async function shareCardPngFile(
   const { dataUrl } = await captureShareCardPng(element);
   const response = await fetch(dataUrl);
   const blob = await response.blob();
-  const file = new File([blob], "life-exe-report.png", { type: "image/png" });
+  const file = new File([blob], "life-is-fine-personality-report.png", {
+    type: "image/png",
+  });
 
   if (!navigator.share) {
     return false;
   }
 
   const payload: ShareData = {
-    title: "Life.EXE 人生報告",
+    title: "Life is Fine 音樂人格報告",
     text: shareText,
     files: [file],
   };

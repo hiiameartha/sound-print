@@ -1,28 +1,32 @@
+import { formatTraitShareLine } from "@/features/personality/constants/trait-display";
 import { SITE } from "@/constants/site";
 import type { ShareCardData } from "@/features/share/types";
 
 export function buildShareText(data: ShareCardData): string {
+  const traitLines = data.radar.map((p) =>
+    formatTraitShareLine(p.key, p.score),
+  );
+
   const lines = [
-    `【${data.title}】`,
-    `Life.EXE 人生報告 · ${data.tier.code} ${data.tier.label}`,
-    `總分 ${data.totalScore}/60（${data.percent}%）`,
-    `王牌：${data.bestLabel} ${data.bestScore}/10`,
-    `待補強：${data.weakestLabel} ${data.weakestScore}/10`,
+    `【${data.yearlyTitle}】`,
+    `Life is Fine · 音樂人格報告`,
+    `🎧 主人格：${data.primaryShortName}`,
+    `副人格：${data.secondaryArchetype.title.split("（")[0]?.trim()}`,
+    ...traitLines,
   ];
 
-  if (data.hasAiCommentary) {
-    lines.push(
-      `幽默分析：${data.commentary.humorousAnalysis}`,
-      `鼓勵建議：${data.commentary.encouragement}`,
-    );
+  if (data.toxicCommentary) {
+    lines.push(`AI 吐槽：${data.toxicCommentary}`);
+  }
+  if (data.humorousCommentary) {
+    lines.push(data.humorousCommentary);
   }
 
-  lines.push(data.hookLine, SITE.url);
+  lines.push(SITE.url);
   return lines.join("\n");
 }
 
 export function buildLineShareUrl(text: string): string {
-  const params = new URLSearchParams({ text });
   return `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
 }
 
