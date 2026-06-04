@@ -8,6 +8,7 @@ import { RadarChartPanel } from "@/features/dashboard/components/RadarChartPanel
 import { TotalScoreCard } from "@/features/dashboard/components/TotalScoreCard";
 import { LifeRecordsPanel } from "@/features/life-records";
 import { LifeCommentaryPanel } from "@/features/life-commentary";
+import { SharePanel } from "@/features/share";
 import { useAssessmentStore } from "@/store/assessment-store";
 
 export function DashboardContent() {
@@ -44,6 +45,8 @@ export function DashboardContent() {
       <LifeRecordsPanel />
 
       <LifeCommentaryPanel result={result} />
+
+      <SharePanel result={result} />
     </div>
   );
 }
