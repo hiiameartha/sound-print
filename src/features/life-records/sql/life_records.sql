@@ -21,11 +21,7 @@ create table if not exists public.life_records (
 create index if not exists life_records_user_id_created_at_idx
   on public.life_records (user_id, created_at desc);
 
--- 若未來接 Supabase Auth，可改成 uuid 並與 auth.users 對齊。
--- 先提供最小可用的 RLS 建議（匿名情境通常會關閉 RLS 或用 service role 寫入）。
--- alter table public.life_records enable row level security;
--- create policy "read_own_records" on public.life_records
---   for select using (user_id = auth.uid()::text);
--- create policy "insert_own_records" on public.life_records
---   for insert with check (user_id = auth.uid()::text);
+-- RLS：Supabase 預設已啟用。未設定 policy 時 anon 無法 INSERT（42501）。
+-- 開發（localStorage user_id、尚未 Auth）請執行：life_records_rls_dev.sql
+-- 正式環境接 Auth 後請改用 auth.uid() 限制讀寫，勿長期使用 dev policy。
 
