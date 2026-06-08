@@ -187,9 +187,9 @@ export function SpotifyLifeScan() {
 
   if (phase === "login") {
     return (
-      <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-8 sm:p-10">
+      <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-5 sm:p-10">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1DB954]/15">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1DB954]/15">
             <Music2 className="h-6 w-6 text-[#1DB954]" aria-hidden />
           </div>
           <div>
