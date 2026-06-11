@@ -17,7 +17,6 @@ export type ShareCardData = {
   primaryShortName: string;
   yearlyTitle: string;
   humorousCommentary: string | null;
-  toxicCommentary: string | null;
   hasAiCommentary: boolean;
   radar: ShareCardRadarPoint[];
   accent: string;

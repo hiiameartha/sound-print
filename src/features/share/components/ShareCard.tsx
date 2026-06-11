@@ -134,43 +134,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </p>
         </section>
 
-        {data.toxicCommentary ? (
-          <section
-            style={{
-              position: "relative",
-              zIndex: 1,
-              margin: "32px 64px 0",
-              padding: "28px 32px",
-              borderRadius: 20,
-              border: "1px solid rgba(251,113,133,0.35)",
-              background: "rgba(251,113,133,0.08)",
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontFamily: "ui-monospace, monospace",
-                fontSize: 18,
-                letterSpacing: "0.14em",
-                color: "#fb7185",
-                fontWeight: 700,
-              }}
-            >
-              AI 吐槽
-            </p>
-            <p
-              style={{
-                margin: "14px 0 0",
-                fontSize: 28,
-                lineHeight: 1.55,
-                color: "#e4e4e7",
-              }}
-            >
-              {data.toxicCommentary}
-            </p>
-          </section>
-        ) : null}
-
         {data.humorousCommentary ? (
           <p
             style={{

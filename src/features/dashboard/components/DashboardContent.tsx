@@ -9,6 +9,7 @@ import { PersonalityTraitCards } from "@/features/dashboard/components/Personali
 import { PrimaryArchetypeCard } from "@/features/dashboard/components/PrimaryArchetypeCard";
 import { SecondaryArchetypeCard } from "@/features/dashboard/components/SecondaryArchetypeCard";
 import { SharePanel } from "@/features/share";
+import { SpotifyListeningPanel } from "@/features/spotify";
 import { usePersonalityReportStore } from "@/store/personality-report-store";
 
 export function DashboardContent() {
@@ -44,13 +45,18 @@ export function DashboardContent() {
           <PrimaryArchetypeCard archetype={profile.primaryArchetype} />
           <SecondaryArchetypeCard archetype={profile.secondaryArchetype} />
           <PersonalityCommentaryPanel profile={profile} />
-          <PersonalityTraitCards traits={profile.traits} />
+          <PersonalityTraitCards
+            traits={profile.traits}
+            traitBreakdowns={profile.traitBreakdowns}
+          />
         </div>
 
         <div className="w-full shrink-0 lg:w-[40%]">
           <PersonalityRadarChart traits={profile.traits} />
         </div>
       </div>
+
+      <SpotifyListeningPanel />
 
       <SharePanel profile={profile} reportId={reportId} />
     </div>

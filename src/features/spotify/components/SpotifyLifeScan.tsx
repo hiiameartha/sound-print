@@ -4,12 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, Music2, Sparkles } from "lucide-react";
-import {
-  PERSONALITY_TRAIT_KEYS,
-  PERSONALITY_TRAIT_LABELS,
-} from "@/features/personality/types/traits";
 import type { PersonalityProfile } from "@/features/personality/types/personality-profile";
+import { PersonalityTraitCards } from "@/features/dashboard/components/PersonalityTraitCards";
 import { PersonalityReportsService } from "@/features/personality-reports/service";
+import { SpotifyListeningPanel } from "@/features/spotify/components/SpotifyListeningPanel";
 import { SITE } from "@/constants/site";
 import { getOrCreateLocalUserId } from "@/lib/user-id";
 import { usePersonalityReportStore } from "@/store/personality-report-store";
@@ -37,15 +35,6 @@ const ERROR_MESSAGES: Record<string, string> = {
   auth_failed: "Spotify 授權失敗，請再試一次",
   invalid_state: "登入狀態已過期，請重新連結",
   no_refresh: "無法取得長期授權，請重新連結 Spotify",
-};
-
-const TRAIT_ACCENTS: Record<(typeof PERSONALITY_TRAIT_KEYS)[number], string> = {
-  romantic: "text-pink-600 dark:text-pink-400",
-  social: "text-violet-600 dark:text-violet-400",
-  nostalgia: "text-amber-600 dark:text-amber-400",
-  explorer: "text-cyan-600 dark:text-cyan-400",
-  emotional: "text-indigo-600 dark:text-indigo-400",
-  adventurous: "text-rose-600 dark:text-rose-400",
 };
 
 async function fetchSession(): Promise<SessionState> {
@@ -250,7 +239,7 @@ export function SpotifyLifeScan() {
   if (!analyzeData) return null;
 
   const { profile } = analyzeData;
-  const { highlights, primaryArchetype, secondaryArchetype, traits } = profile;
+  const { highlights, primaryArchetype, secondaryArchetype } = profile;
 
   return (
     <div className="space-y-8">
@@ -305,29 +294,12 @@ export function SpotifyLifeScan() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {PERSONALITY_TRAIT_KEYS.map((key) => (
-          <div
-            key={key}
-            className="rounded-xl border border-border bg-background/60 p-4"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <p className="font-medium">{PERSONALITY_TRAIT_LABELS[key]}</p>
-              <span
-                className={cn(
-                  "font-mono text-2xl font-bold tabular-nums",
-                  TRAIT_ACCENTS[key],
-                )}
-              >
-                {traits[key]}
-              </span>
-            </div>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80">
-              由 Personality Engine 推算 · 0–100
-            </p>
-          </div>
-        ))}
-      </div>
+      <SpotifyListeningPanel />
+
+      <PersonalityTraitCards
+        traits={profile.traits}
+        traitBreakdowns={profile.traitBreakdowns}
+      />
 
       <div className="flex flex-wrap gap-3">
         <button

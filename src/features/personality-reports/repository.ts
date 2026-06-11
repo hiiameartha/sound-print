@@ -57,7 +57,6 @@ export class PersonalityReportsRepository {
     id: string,
     fields: {
       humorous_commentary: string;
-      toxic_commentary: string;
       yearly_title: string;
     },
   ): Promise<PersonalityReportRow> {

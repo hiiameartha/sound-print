@@ -164,15 +164,6 @@ export function PersonalityCommentaryPanel({
               {commentary.humorousCommentary}
             </p>
           </div>
-
-          <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4">
-            <h4 className="mb-2 font-mono text-xs uppercase tracking-widest text-rose-600 dark:text-rose-400">
-              毒舌評論
-            </h4>
-            <p className="leading-relaxed text-foreground">
-              {commentary.toxicCommentary}
-            </p>
-          </div>
         </motion.div>
       )}
     </DashboardCard>

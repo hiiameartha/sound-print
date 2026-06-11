@@ -35,7 +35,6 @@ export const personalityCommentaryRequestSchema = z.object({
 
 export const personalityCommentaryResponseSchema = z.object({
   humorousCommentary: z.string().min(10).max(600),
-  toxicCommentary: z.string().min(10).max(600),
   yearlyTitle: z.string().min(2).max(40),
 });
 

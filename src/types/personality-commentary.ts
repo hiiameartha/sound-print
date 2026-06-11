@@ -2,7 +2,6 @@ import type { PersonalityProfile } from "@/features/personality/types/personalit
 
 export type PersonalityCommentary = {
   humorousCommentary: string;
-  toxicCommentary: string;
   yearlyTitle: string;
 };
 

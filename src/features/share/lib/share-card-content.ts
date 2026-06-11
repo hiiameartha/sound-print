@@ -47,7 +47,6 @@ export function buildShareCardDataFromProfile(
     yearlyTitle:
       commentary?.yearlyTitle?.trim() || getFallbackYearlyTitle(profile),
     humorousCommentary: commentary?.humorousCommentary ?? null,
-    toxicCommentary: commentary?.toxicCommentary ?? null,
     hasAiCommentary: Boolean(commentary),
     radar: buildRadarPoints(profile),
     accent: getArchetypeAccent(profile.primaryArchetype.id),

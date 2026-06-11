@@ -9,6 +9,13 @@ export type {
   PersonalityHighlights,
   PersonalityProfile,
 } from "./personality-profile";
+export type {
+  PersonalityTraitBreakdowns,
+  TraitBreakdown,
+  TraitContributor,
+  TraitCompositionMetric,
+} from "./trait-breakdown";
+export { TRAIT_EVIDENCE_SOURCE_LABELS } from "./trait-breakdown";
 export {
   PERSONALITY_TRAIT_KEYS,
   PERSONALITY_TRAIT_LABELS,

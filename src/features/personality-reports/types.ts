@@ -7,6 +7,7 @@ import type {
   PersonalityHighlights,
   PersonalityProfile,
 } from "@/features/personality/types/personality-profile";
+import type { PersonalityTraitBreakdowns } from "@/features/personality/types/trait-breakdown";
 import type { PersonalityTraits } from "@/features/personality/types/traits";
 import type { PersonalityCommentary } from "@/types/personality-commentary";
 
@@ -17,6 +18,8 @@ export type SpotifySnapshot = {
   engineVersion: string;
   provider: "spotify";
   analyzedAt: string;
+  traitBreakdowns?: PersonalityTraitBreakdowns;
+  signalEnrichment?: PersonalityProfile["signalEnrichment"];
 };
 
 export type PersonalityReportRow = {
@@ -32,7 +35,6 @@ export type PersonalityReportRow = {
   adventurous: number;
   spotify_snapshot: SpotifySnapshot | null;
   humorous_commentary: string | null;
-  toxic_commentary: string | null;
   yearly_title: string | null;
   created_at: string;
 };
@@ -49,7 +51,6 @@ export type PersonalityReportInsert = {
   adventurous: number;
   spotify_snapshot: SpotifySnapshot;
   humorous_commentary?: string | null;
-  toxic_commentary?: string | null;
   yearly_title?: string | null;
   created_at?: string;
 };
@@ -84,9 +85,10 @@ export function profileToInsert(
       engineVersion: profile.engineVersion,
       provider: profile.provider,
       analyzedAt: profile.analyzedAt,
+      traitBreakdowns: profile.traitBreakdowns,
+      signalEnrichment: profile.signalEnrichment,
     },
     humorous_commentary: commentary?.humorousCommentary ?? null,
-    toxic_commentary: commentary?.toxicCommentary ?? null,
     yearly_title: commentary?.yearlyTitle ?? null,
     created_at: profile.analyzedAt,
   };
@@ -111,14 +113,15 @@ export function rowToPersonalityReport(row: PersonalityReportRow): PersonalityRe
         analyzedAt: snapshot.analyzedAt,
         engineVersion: snapshot.engineVersion,
         provider: snapshot.provider,
+        traitBreakdowns: snapshot.traitBreakdowns,
+        signalEnrichment: snapshot.signalEnrichment,
       }
     : buildProfileFromRowOnly(row);
 
   const commentary =
-    row.humorous_commentary && row.toxic_commentary && row.yearly_title
+    row.humorous_commentary && row.yearly_title
       ? {
           humorousCommentary: row.humorous_commentary,
-          toxicCommentary: row.toxic_commentary,
           yearlyTitle: row.yearly_title,
         }
       : null;

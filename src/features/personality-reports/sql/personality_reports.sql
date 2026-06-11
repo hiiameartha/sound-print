@@ -18,7 +18,6 @@ create table if not exists public.personality_reports (
   spotify_snapshot jsonb,
 
   humorous_commentary text,
-  toxic_commentary text,
   yearly_title text,
 
   created_at timestamptz not null default now()

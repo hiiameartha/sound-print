@@ -20,9 +20,6 @@ export function buildShareText(data: ShareCardData): string {
     ...traitLines,
   ];
 
-  if (data.toxicCommentary) {
-    lines.push(`AI 吐槽：${data.toxicCommentary}`);
-  }
   if (data.humorousCommentary) {
     lines.push(data.humorousCommentary);
   }

@@ -42,7 +42,6 @@ export class PersonalityReportsService {
   ): Promise<PersonalityReport> {
     const updated = await this.repo.updateCommentary(reportId, {
       humorous_commentary: commentary.humorousCommentary,
-      toxic_commentary: commentary.toxicCommentary,
       yearly_title: commentary.yearlyTitle,
     });
     return rowToPersonalityReport(updated);

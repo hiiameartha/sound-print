@@ -211,7 +211,7 @@ export function SharePanel({
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           {!commentaryReady && (
             <p className="text-xs text-amber-600 dark:text-amber-400">
-              AI 年度稱號與吐槽尚未就緒；產生後請重新下載 PNG 以更新分享卡。
+              AI 年度稱號與幽默評論尚未就緒；產生後請重新下載 PNG 以更新分享卡。
             </p>
           )}
           <p className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-3 text-sm text-cyan-800 dark:text-cyan-300">
