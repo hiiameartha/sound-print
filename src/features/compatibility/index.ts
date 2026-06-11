@@ -3,6 +3,7 @@ export { CompatibilityResultView } from "@/features/compatibility/components/Com
 export { comparePersonalityReports } from "@/features/compatibility/engine/compatibility-engine";
 export {
   buildCompatibilityInviteUrl,
+  buildSpotifyComparePath,
   buildSpotifyCompareUrl,
   COMPATIBILITY_INVITE_CTA,
 } from "@/features/compatibility/lib/build-compatibility-invite-url";

@@ -8,7 +8,7 @@ import { CompatibilityResultView } from "@/features/compatibility/components/Com
 import { comparePersonalityReports } from "@/features/compatibility/engine/compatibility-engine";
 import {
   buildCompatibilityInviteUrl,
-  buildSpotifyCompareUrl,
+  buildSpotifyComparePath,
   COMPATIBILITY_COMPARE_PARAM,
   COMPATIBILITY_INVITE_CTA,
   persistCompatibilityTarget,
@@ -148,7 +148,7 @@ export function CompatibilityPanel() {
   }
 
   if (friendReportId && friendReport && !myReport) {
-    const spotifyCompareUrl = buildSpotifyCompareUrl(friendReportId);
+    const spotifyComparePath = buildSpotifyComparePath(friendReportId);
     const friendName =
       friendReport.profile.highlights.displayName ??
       friendReport.profile.primaryArchetype.title.split("（")[0]?.trim();
@@ -167,7 +167,7 @@ export function CompatibilityPanel() {
             {COMPATIBILITY_INVITE_CTA.steps}
           </p>
           <a
-            href={spotifyCompareUrl}
+            href={spotifyComparePath}
             onClick={() => persistCompatibilityTarget(friendReportId)}
             className={cn(
               "mt-6 inline-flex h-11 items-center gap-2 rounded-full px-6 text-sm font-semibold",
