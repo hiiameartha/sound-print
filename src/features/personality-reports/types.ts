@@ -7,6 +7,7 @@ import type {
   PersonalityHighlights,
   PersonalityProfile,
 } from "@/features/personality/types/personality-profile";
+import type { ListeningInsights } from "@/features/personality/types/listening-insights";
 import type { PersonalityTraitBreakdowns } from "@/features/personality/types/trait-breakdown";
 import type { PersonalityTraits } from "@/features/personality/types/traits";
 import type { PersonalityCommentary } from "@/types/personality-commentary";
@@ -19,6 +20,7 @@ export type SpotifySnapshot = {
   provider: "spotify";
   analyzedAt: string;
   traitBreakdowns?: PersonalityTraitBreakdowns;
+  insights?: ListeningInsights;
   signalEnrichment?: PersonalityProfile["signalEnrichment"];
 };
 
@@ -86,6 +88,7 @@ export function profileToInsert(
       provider: profile.provider,
       analyzedAt: profile.analyzedAt,
       traitBreakdowns: profile.traitBreakdowns,
+      insights: profile.insights,
       signalEnrichment: profile.signalEnrichment,
     },
     humorous_commentary: commentary?.humorousCommentary ?? null,
@@ -114,6 +117,7 @@ export function rowToPersonalityReport(row: PersonalityReportRow): PersonalityRe
         engineVersion: snapshot.engineVersion,
         provider: snapshot.provider,
         traitBreakdowns: snapshot.traitBreakdowns,
+        insights: snapshot.insights,
         signalEnrichment: snapshot.signalEnrichment,
       }
     : buildProfileFromRowOnly(row);

@@ -1,4 +1,5 @@
 import { spotifyToPersonalityInput } from "@/features/personality/engine/adapters/spotify-to-personality-input";
+import { buildListeningInsights } from "@/features/personality/engine/build-listening-insights";
 import { buildTraitBreakdowns } from "@/features/personality/engine/build-trait-breakdowns";
 import { computeListeningMetrics } from "@/features/personality/engine/utils/listening-metrics";
 import {
@@ -50,15 +51,14 @@ export async function analyzeSpotifyPersonality(
   }
 
   const profile = analyzePersonalityFromInput(input);
-  const traitBreakdowns = buildTraitBreakdowns(
-    input,
-    profile.traits,
-    computeListeningMetrics(listening),
-  );
+  const metrics = computeListeningMetrics(listening);
+  const traitBreakdowns = buildTraitBreakdowns(input, profile.traits, metrics);
+  const insights = buildListeningInsights(listening, input, metrics);
 
   const withBreakdowns = {
     ...profile,
     traitBreakdowns,
+    insights,
     ...(enrichedFields.length > 0
       ? { signalEnrichment: { source: "ai" as const, fields: enrichedFields } }
       : {}),

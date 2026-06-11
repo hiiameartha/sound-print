@@ -8,6 +8,11 @@ import type { PersonalityProfile } from "@/features/personality/types/personalit
 import { PersonalityTraitCards } from "@/features/dashboard/components/PersonalityTraitCards";
 import { PersonalityReportsService } from "@/features/personality-reports/service";
 import { SpotifyListeningPanel } from "@/features/spotify/components/SpotifyListeningPanel";
+import {
+  persistCompatibilityTarget,
+  readCompatibilityTarget,
+  SPOTIFY_COMPARE_PARAM,
+} from "@/features/compatibility/lib/build-compatibility-invite-url";
 import { SITE } from "@/constants/site";
 import { getOrCreateLocalUserId } from "@/lib/user-id";
 import { usePersonalityReportStore } from "@/store/personality-report-store";
@@ -68,6 +73,13 @@ export function SpotifyLifeScan() {
   const bootstrapStarted = useRef(false);
   const urlError = searchParams.get("error");
   const fromShare = searchParams.get("from") === "share";
+  const compareReportId = searchParams.get(SPOTIFY_COMPARE_PARAM);
+
+  useEffect(() => {
+    if (compareReportId) {
+      persistCompatibilityTarget(compareReportId);
+    }
+  }, [compareReportId]);
 
   const runAnalyze = useCallback(async () => {
     setPhase("analyzing");
@@ -149,6 +161,12 @@ export function SpotifyLifeScan() {
       setProfile(profile);
     }
 
+    const compatTarget = compareReportId ?? readCompatibilityTarget();
+    if (compatTarget) {
+      router.push(`/compatibility?with=${encodeURIComponent(compatTarget)}`);
+      return;
+    }
+
     router.push("/dashboard");
   };
 
@@ -179,7 +197,11 @@ export function SpotifyLifeScan() {
   if (phase === "login") {
     return (
       <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-5 sm:p-10">
-        {fromShare ? (
+        {compareReportId ? (
+          <p className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-3 text-sm leading-relaxed text-foreground">
+            朋友邀請你比較 Spotify 音樂相容性！連結帳號後，就能看見你們的音樂重疊與合拍建議。
+          </p>
+        ) : fromShare ? (
           <p className="rounded-lg border border-[#1DB954]/30 bg-[#1DB954]/10 px-4 py-3 text-sm leading-relaxed text-foreground">
             朋友分享了 {SITE.name} 音樂人格報告！連結你的 Spotify，幾分鐘內就能取得屬於你的報告。
           </p>

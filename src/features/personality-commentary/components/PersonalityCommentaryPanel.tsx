@@ -89,7 +89,7 @@ export function PersonalityCommentaryPanel({
 
   return (
     <DashboardCard
-      title="AI 人格評論"
+      title="人格評論"
       action={
         <button
           type="button"

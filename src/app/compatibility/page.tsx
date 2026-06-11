@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SITE } from "@/constants/site";
 import { CompatibilityPanel } from "@/features/compatibility";
 import { createPageMetadata } from "@/lib/metadata";
 
+function CompatibilityFallback() {
+  return (
+    <div className="flex min-h-[200px] items-center justify-center">
+      <p className="font-mono text-sm text-muted-foreground">載入相容性…</p>
+    </div>
+  );
+}
+
 export const metadata: Metadata = createPageMetadata({
-  title: "人格相容性",
-  description: `比較兩份音樂人格報告的相容程度。${SITE.name} — ${SITE.tagline}`,
+  title: "音樂相容性",
+  description: `比較兩份 Spotify 音樂人格的合拍程度：音樂重疊、人格互補、情境建議。${SITE.name} — ${SITE.tagline}`,
   path: "/compatibility",
 });
 
@@ -21,12 +30,14 @@ export default function CompatibilityPage() {
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-violet-600 dark:text-violet-400">
             {SITE.name}
           </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">人格相容性</h1>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight">音樂相容性</h1>
           <p className="mt-2 text-muted-foreground">
-            選兩份歷史報告，看看人格頻率有多接近（規則引擎，可重現、非 AI）。
+            拆開看音樂重疊、人格互補與情緒同步，並給出一起旅行、工作、唱歌的合拍建議。邀請好友連結 Spotify 即可比較。
           </p>
         </header>
-        <CompatibilityPanel />
+        <Suspense fallback={<CompatibilityFallback />}>
+          <CompatibilityPanel />
+        </Suspense>
       </section>
     </div>
   );

@@ -1,4 +1,5 @@
 import type { ArchetypeMatch } from "@/features/personality/types/archetype";
+import type { ListeningInsights } from "@/features/personality/types/listening-insights";
 import type { PersonalityTraitBreakdowns } from "@/features/personality/types/trait-breakdown";
 import type { PersonalityTraits } from "@/features/personality/types/traits";
 
@@ -26,4 +27,6 @@ export type PersonalityProfile = {
   signalEnrichment?: PersonalitySignalEnrichment;
   /** 各維度分數的聆聽證據與組成 */
   traitBreakdowns?: PersonalityTraitBreakdowns;
+  /** 儀表板洞察區：音樂觀察與 AI 推論 */
+  insights?: ListeningInsights;
 };

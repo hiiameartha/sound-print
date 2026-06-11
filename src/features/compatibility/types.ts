@@ -7,6 +7,29 @@ export type CompatibilityInput = {
   reportBId: string;
 };
 
+export type CompatibilityDimensionKey =
+  | "musicOverlap"
+  | "personalityComplement"
+  | "emotionalSync";
+
+export type CompatibilityDimension = {
+  key: CompatibilityDimensionKey;
+  label: string;
+  score: number;
+};
+
+export type CompatibilityScenarioKey = "travel" | "work" | "karaoke";
+
+export type CompatibilityScenarioLevel = "strong" | "good" | "okay" | "weak";
+
+export type CompatibilityScenario = {
+  key: CompatibilityScenarioKey;
+  label: string;
+  score: number;
+  level: CompatibilityScenarioLevel;
+  verdict: string;
+};
+
 export type CompatibilityTraitDelta = {
   key: PersonalityTraitKey;
   label: string;
@@ -20,10 +43,14 @@ export type CompatibilityResult = {
   sessionId: string;
   score: number;
   summary: string;
+  dimensions: CompatibilityDimension[];
+  scenarios: CompatibilityScenario[];
   traitDeltas: Record<PersonalityTraitKey, number>;
   traitDetails: CompatibilityTraitDelta[];
   reportAId: string;
   reportBId: string;
+  labelA: string;
+  labelB: string;
 };
 
 export interface CompatibilityEngine {

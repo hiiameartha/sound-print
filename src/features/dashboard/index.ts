@@ -1,4 +1,5 @@
 export { DashboardContent } from "./components/DashboardContent";
+export { DashboardInsightsPanel } from "./components/DashboardInsightsPanel";
 export { PersonalityHeader } from "./components/PersonalityHeader";
 export { PersonalityRadarChart } from "./components/PersonalityRadarChart";
 export { PersonalityTraitCards } from "./components/PersonalityTraitCards";

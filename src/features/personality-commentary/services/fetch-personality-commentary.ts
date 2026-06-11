@@ -19,7 +19,7 @@ export async function fetchPersonalityCommentary(
       "error" in payload &&
       typeof (payload as { error: unknown }).error === "string"
         ? (payload as { error: string }).error
-        : "無法取得 AI 人格評論";
+        : "無法取得人格評論";
     throw new Error(error);
   }
 
