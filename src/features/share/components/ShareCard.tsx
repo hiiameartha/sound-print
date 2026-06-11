@@ -5,10 +5,16 @@ import dayjs from "dayjs";
 import { SITE } from "@/constants/site";
 import { formatTraitShareLine } from "@/features/personality/constants/trait-display";
 import { SHARE_CARD_WIDTH } from "@/features/share/constants";
+import {
+  formatShareInviteUrlForDisplay,
+  SHARE_INVITE_CTA,
+} from "@/features/share/lib/share-invite-url";
 import type { ShareCardData } from "@/features/share/types";
 
 type ShareCardProps = {
   data: ShareCardData;
+  inviteUrl: string;
+  inviteQrDataUrl: string | null;
 };
 
 const RADAR_SIZE = 320;
@@ -17,9 +23,10 @@ const RADAR_MAX_R = 118;
 const LABEL_R = 148;
 
 export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
-  function ShareCard({ data }, ref) {
+  function ShareCard({ data, inviteUrl, inviteQrDataUrl }, ref) {
     const dateLabel = dayjs(data.analyzedAt).format("YYYY.MM.DD");
     const accent = data.accent;
+    const inviteUrlLabel = formatShareInviteUrlForDisplay(inviteUrl);
     const secondaryShort =
       data.secondaryArchetype.title.split("（")[0]?.trim() ??
       data.secondaryArchetype.title;
@@ -220,15 +227,100 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
             position: "relative",
             zIndex: 1,
             margin: "0 64px 52px",
-            padding: "24px 28px",
-            borderRadius: 16,
-            border: "1px solid rgba(255,255,255,0.08)",
-            background: `${accent}18`,
+            padding: "32px 36px",
+            borderRadius: 20,
+            border: "1px solid rgba(29,185,84,0.35)",
+            background:
+              "linear-gradient(135deg, rgba(29,185,84,0.12) 0%, rgba(5,5,8,0.6) 100%)",
           }}
         >
-          <p style={{ margin: 0, fontSize: 22, color: "#fafafa" }}>
-            Tell me what you listen to, and I&apos;ll tell you who you are.
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "ui-monospace, monospace",
+              fontSize: 18,
+              letterSpacing: "0.16em",
+              color: "#1DB954",
+              fontWeight: 700,
+            }}
+          >
+            {SITE.name} · {SHARE_INVITE_CTA.action}
           </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "220px 1fr",
+              gap: 28,
+              marginTop: 24,
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                width: 220,
+                height: 220,
+                borderRadius: 16,
+                border: "2px solid rgba(250,250,250,0.15)",
+                overflow: "hidden",
+                background: "#050508",
+              }}
+            >
+              {inviteQrDataUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={inviteQrDataUrl}
+                  alt=""
+                  width={220}
+                  height={220}
+                  style={{ display: "block" }}
+                />
+              ) : null}
+            </div>
+            <div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 32,
+                  fontWeight: 800,
+                  lineHeight: 1.25,
+                  color: "#fafafa",
+                }}
+              >
+                {SHARE_INVITE_CTA.headline}
+              </p>
+              <p
+                style={{
+                  margin: "14px 0 0",
+                  fontSize: 22,
+                  lineHeight: 1.5,
+                  color: "#a1a1aa",
+                }}
+              >
+                掃描左側 QR Code，或開啟下方網址連結 Spotify，即可取得你的音樂人格報告。
+              </p>
+              <p
+                style={{
+                  margin: "20px 0 0",
+                  fontSize: 28,
+                  fontWeight: 700,
+                  color: "#1DB954",
+                  wordBreak: "break-all",
+                }}
+              >
+                {inviteUrlLabel}
+              </p>
+              <p
+                style={{
+                  margin: "16px 0 0",
+                  fontSize: 20,
+                  lineHeight: 1.5,
+                  color: "#71717a",
+                }}
+              >
+                {SHARE_INVITE_CTA.steps}
+              </p>
+            </div>
+          </div>
         </footer>
       </div>
     );

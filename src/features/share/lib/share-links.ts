@@ -1,11 +1,16 @@
 import { formatTraitShareLine } from "@/features/personality/constants/trait-display";
 import { SITE } from "@/constants/site";
+import {
+  buildShareInviteUrl,
+  SHARE_INVITE_CTA,
+} from "@/features/share/lib/share-invite-url";
 import type { ShareCardData } from "@/features/share/types";
 
 export function buildShareText(data: ShareCardData): string {
   const traitLines = data.radar.map((p) =>
     formatTraitShareLine(p.key, p.score),
   );
+  const inviteUrl = buildShareInviteUrl();
 
   const lines = [
     `【${data.yearlyTitle}】`,
@@ -22,7 +27,13 @@ export function buildShareText(data: ShareCardData): string {
     lines.push(data.humorousCommentary);
   }
 
-  lines.push(SITE.url);
+  lines.push(
+    "",
+    "—",
+    SHARE_INVITE_CTA.headline,
+    `${SHARE_INVITE_CTA.steps}`,
+    `👉 ${inviteUrl}`,
+  );
   return lines.join("\n");
 }
 

@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Copy, Download, Loader2, Share2 } from "lucide-react";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
 import { SHARE_CARD_WIDTH } from "@/features/share/constants";
@@ -18,14 +25,14 @@ import {
   openShareWindow,
 } from "@/features/share/lib/share-links";
 import { ShareCard } from "@/features/share/components/ShareCard";
-import { SITE } from "@/constants/site";
+import { buildShareInviteUrl } from "@/features/share/lib/share-invite-url";
+import { generateShareQrDataUrl } from "@/features/share/lib/share-qr-code";
 import { usePersonalityCommentaryStore } from "@/store/personality-commentary-store";
 import type { PersonalityProfile } from "@/features/personality/types/personality-profile";
 import type { PersonalityCommentary } from "@/types/personality-commentary";
 import { cn } from "@/lib/utils";
 
 const PREVIEW_MAX_WIDTH = 360;
-const PREVIEW_SCALE = PREVIEW_MAX_WIDTH / SHARE_CARD_WIDTH;
 
 type SharePanelProps = {
   profile: PersonalityProfile;
@@ -40,7 +47,9 @@ export function SharePanel({
   reportId: _reportId,
 }: SharePanelProps) {
   const exportRef = useRef<HTMLDivElement>(null);
+  const previewShellRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState(SHARE_CARD_WIDTH);
+  const [previewWidth, setPreviewWidth] = useState(PREVIEW_MAX_WIDTH);
   const [isExporting, setIsExporting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
@@ -61,6 +70,18 @@ export function SharePanel({
   );
 
   const shareText = useMemo(() => buildShareText(cardData), [cardData]);
+  const inviteUrl = useMemo(() => buildShareInviteUrl(), []);
+  const [inviteQrDataUrl, setInviteQrDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void generateShareQrDataUrl(inviteUrl).then((dataUrl) => {
+      if (!cancelled) setInviteQrDataUrl(dataUrl);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [inviteUrl]);
 
   useLayoutEffect(() => {
     const node = exportRef.current;
@@ -74,14 +95,36 @@ export function SharePanel({
     const observer = new ResizeObserver(updateHeight);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [cardData]);
+  }, [cardData, inviteQrDataUrl]);
 
-  const previewHeight = Math.ceil(cardHeight * PREVIEW_SCALE);
+  useLayoutEffect(() => {
+    const shell = previewShellRef.current;
+    if (!shell) return;
+
+    const updateWidth = () => {
+      const next = Math.min(PREVIEW_MAX_WIDTH, Math.floor(shell.clientWidth));
+      setPreviewWidth(next > 0 ? next : PREVIEW_MAX_WIDTH);
+    };
+
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(shell);
+    return () => observer.disconnect();
+  }, []);
+
+  const previewScale = previewWidth / SHARE_CARD_WIDTH;
+  const previewHeight = Math.ceil(cardHeight * previewScale);
+  const inviteReady = inviteQrDataUrl !== null;
 
   const runExport = useCallback(
     async (action: "download" | "native") => {
       const node = exportRef.current;
       if (!node) return;
+
+      if (!inviteQrDataUrl) {
+        setStatusMessage("分享卡載入中，請稍候再下載");
+        return;
+      }
 
       setIsExporting(true);
       setStatusMessage(null);
@@ -108,7 +151,7 @@ export function SharePanel({
         setIsExporting(false);
       }
     },
-    [shareText],
+    [inviteQrDataUrl, shareText],
   );
 
   const handleCopyText = useCallback(async () => {
@@ -125,36 +168,39 @@ export function SharePanel({
   }, [shareText]);
 
   const handleFacebook = useCallback(() => {
-    openShareWindow(buildFacebookShareUrl(SITE.url));
-  }, []);
+    openShareWindow(buildFacebookShareUrl(inviteUrl));
+  }, [inviteUrl]);
 
   const handleTwitter = useCallback(() => {
-    openShareWindow(buildTwitterShareUrl(shareText, SITE.url));
-  }, [shareText]);
+    openShareWindow(buildTwitterShareUrl(shareText, inviteUrl));
+  }, [inviteUrl, shareText]);
 
   return (
     <DashboardCard
       title="分享人格報告"
-      subtitle="1080px 寬 · 內嵌分享卡 · 一鍵下載 PNG"
+      subtitle="1080px 寬 · 含 QR Code 邀請好友檢測 · 一鍵下載 PNG"
     >
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-        <div className="mx-auto shrink-0 lg:mx-0">
+      <div className="flex min-w-0 flex-col gap-6 lg:flex-row lg:items-start">
+        <div
+          ref={previewShellRef}
+          className="mx-auto w-full min-w-0 max-w-[360px] shrink-0 lg:mx-0"
+        >
           <div
-            className="overflow-hidden rounded-2xl border border-border/80 shadow-lg ring-1 ring-cyan-500/10"
-            style={{
-              width: PREVIEW_MAX_WIDTH,
-              height: previewHeight,
-            }}
+            className="relative overflow-hidden rounded-2xl border border-border/80 shadow-lg ring-1 ring-cyan-500/10"
+            style={{ height: previewHeight }}
           >
             <div
+              className="pointer-events-none absolute left-0 top-0 origin-top-left"
               style={{
                 width: SHARE_CARD_WIDTH,
-                transform: `scale(${PREVIEW_SCALE})`,
-                transformOrigin: "top left",
-                pointerEvents: "none",
+                transform: `scale(${previewScale})`,
               }}
             >
-              <ShareCard data={cardData} />
+              <ShareCard
+                data={cardData}
+                inviteUrl={inviteUrl}
+                inviteQrDataUrl={inviteQrDataUrl}
+              />
             </div>
           </div>
           <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -177,7 +223,7 @@ export function SharePanel({
           <div className="flex flex-wrap gap-2">
             <ActionButton
               onClick={() => void runExport("download")}
-              disabled={isExporting}
+              disabled={isExporting || !inviteReady}
               variant="primary"
               icon={
                 isExporting ? (
@@ -190,7 +236,7 @@ export function SharePanel({
             />
             <ActionButton
               onClick={() => void runExport("native")}
-              disabled={isExporting}
+              disabled={isExporting || !inviteReady}
               icon={<Share2 className="h-4 w-4" aria-hidden />}
               label="系統分享"
             />
@@ -238,7 +284,12 @@ export function SharePanel({
         className="pointer-events-none fixed top-0 -left-[10000px] w-max"
         aria-hidden
       >
-        <ShareCard ref={exportRef} data={cardData} />
+        <ShareCard
+          ref={exportRef}
+          data={cardData}
+          inviteUrl={inviteUrl}
+          inviteQrDataUrl={inviteQrDataUrl}
+        />
       </div>
     </DashboardCard>
   );

@@ -10,6 +10,7 @@ import {
 } from "@/features/personality/types/traits";
 import type { PersonalityProfile } from "@/features/personality/types/personality-profile";
 import { PersonalityReportsService } from "@/features/personality-reports/service";
+import { SITE } from "@/constants/site";
 import { getOrCreateLocalUserId } from "@/lib/user-id";
 import { usePersonalityReportStore } from "@/store/personality-report-store";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,7 @@ export function SpotifyLifeScan() {
 
   const bootstrapStarted = useRef(false);
   const urlError = searchParams.get("error");
+  const fromShare = searchParams.get("from") === "share";
 
   const runAnalyze = useCallback(async () => {
     setPhase("analyzing");
@@ -188,6 +190,11 @@ export function SpotifyLifeScan() {
   if (phase === "login") {
     return (
       <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-5 sm:p-10">
+        {fromShare ? (
+          <p className="rounded-lg border border-[#1DB954]/30 bg-[#1DB954]/10 px-4 py-3 text-sm leading-relaxed text-foreground">
+            朋友分享了 {SITE.name} 音樂人格報告！連結你的 Spotify，幾分鐘內就能取得屬於你的報告。
+          </p>
+        ) : null}
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1DB954]/15">
             <Music2 className="h-6 w-6 text-[#1DB954]" aria-hidden />

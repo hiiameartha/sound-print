@@ -4,6 +4,10 @@ function resolveSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (explicit) return explicit;
 
+  if (process.env.VERCEL_ENV === "production") {
+    return PRODUCTION_SITE_URL;
+  }
+
   const vercel = process.env.VERCEL_URL?.replace(/\/$/, "");
   if (vercel) return `https://${vercel}`;
 
