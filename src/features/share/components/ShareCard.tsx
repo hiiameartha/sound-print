@@ -2,6 +2,7 @@
 
 import { forwardRef } from "react";
 import dayjs from "dayjs";
+import { SITE } from "@/constants/site";
 import { formatTraitShareLine } from "@/features/personality/constants/trait-display";
 import { SHARE_CARD_WIDTH } from "@/features/share/constants";
 import type { ShareCardData } from "@/features/share/types";
@@ -64,7 +65,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
               color: accent,
             }}
           >
-            Life is Fine
+            {SITE.name}
           </p>
           <p style={{ margin: "8px 0 0", fontSize: 24, color: "#71717a" }}>
             音樂人格報告 · {dateLabel}

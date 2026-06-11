@@ -15,7 +15,7 @@ export function getSpotifyConfig(): SpotifyConfig | null {
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
   const redirectUri =
     process.env.SPOTIFY_REDIRECT_URI ??
-    `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/api/spotify/callback`;
+    `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://127.0.0.1:3000"}/api/spotify/callback`;
 
   if (!clientId || !clientSecret) return null;
 

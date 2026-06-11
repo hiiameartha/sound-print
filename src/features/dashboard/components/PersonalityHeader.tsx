@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RotateCcw } from "lucide-react";
+import { SITE } from "@/constants/site";
 import { usePersonalityCommentaryStore } from "@/store/personality-commentary-store";
 import { usePersonalityReportStore } from "@/store/personality-report-store";
 
@@ -30,14 +31,12 @@ export function PersonalityHeader({
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400">
-          Life is Fine
+          {SITE.name}
         </p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
           你的音樂人格
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Tell me what you listen to, and I&apos;ll tell you who you are.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{SITE.tagline}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           {displayName ? `${displayName} · ` : ""}
           最近分析 · {completedLabel}

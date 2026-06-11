@@ -1,3 +1,4 @@
+import { SITE } from "@/constants/site";
 import { toPng } from "html-to-image";
 import { SHARE_CARD_WIDTH } from "@/features/share/constants";
 
@@ -35,7 +36,7 @@ export async function captureShareCardPng(
 
 export async function downloadShareCardPng(
   element: HTMLElement,
-  filename = "life-is-fine-personality-report.png",
+  filename = "sound-print-personality-report.png",
 ): Promise<ShareCardExportSize> {
   const { dataUrl, size } = await captureShareCardPng(element);
   const link = document.createElement("a");
@@ -52,7 +53,7 @@ export async function shareCardPngFile(
   const { dataUrl } = await captureShareCardPng(element);
   const response = await fetch(dataUrl);
   const blob = await response.blob();
-  const file = new File([blob], "life-is-fine-personality-report.png", {
+  const file = new File([blob], "sound-print-personality-report.png", {
     type: "image/png",
   });
 
@@ -61,7 +62,7 @@ export async function shareCardPngFile(
   }
 
   const payload: ShareData = {
-    title: "Life is Fine 音樂人格報告",
+    title: `${SITE.name} 音樂人格報告`,
     text: shareText,
     files: [file],
   };

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { SITE } from "@/constants/site";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
   title: "聯絡我們",
-  description: "與 Life is Fine 團隊取得聯繫。",
+  description: `與 ${SITE.name} 團隊取得聯繫。`,
   path: "/contact",
 });
 

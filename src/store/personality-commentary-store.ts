@@ -22,6 +22,6 @@ export const usePersonalityCommentaryStore = create<PersonalityCommentaryState>(
       clearCommentary: () =>
         set({ commentary: null, sourceAnalyzedAt: null }),
     }),
-    { name: "life-is-fine-personality-commentary" },
+    { name: "sound-print-personality-commentary" },
   ),
 );

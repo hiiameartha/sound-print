@@ -90,7 +90,6 @@ export function PersonalityCommentaryPanel({
   return (
     <DashboardCard
       title="AI 人格評論"
-      subtitle="幽默 · 毒舌 · 年度稱號（可選，需 OPENAI_API_KEY）"
       action={
         <button
           type="button"

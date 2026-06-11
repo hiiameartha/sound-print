@@ -18,6 +18,6 @@ export const usePersonalityReportStore = create<PersonalityReportState>()(
         set({ profile, reportId: reportId ?? null }),
       clearProfile: () => set({ profile: null, reportId: null }),
     }),
-    { name: "life-is-fine-personality-report" },
+    { name: "sound-print-personality-report" },
   ),
 );

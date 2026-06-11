@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { SITE } from "@/constants/site";
 import { DashboardContent } from "@/features/dashboard";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
   title: "音樂人格報告",
-  description:
-    "Life is Fine：Tell me what you listen to, and I'll tell you who you are. 你的音樂人格、特質雷達與 AI 評論。",
+  description: `${SITE.name}：${SITE.tagline} 你的音樂人格、特質雷達與 AI 評論。`,
   path: "/dashboard",
 });
 

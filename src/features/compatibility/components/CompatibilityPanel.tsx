@@ -55,7 +55,7 @@ export function CompatibilityPanel() {
     return (
       <DashboardCard title="人格相容性" subtitle="需要至少兩份歷史報告">
         <p className="text-sm text-muted-foreground">
-          完成兩次以上 Spotify 檢測後，就能比較不同時間的音樂人格。
+          完成兩次以上音樂人格檢測後，就能比較不同時間的聆聽人格。
         </p>
         <Link
           href="/spotify"

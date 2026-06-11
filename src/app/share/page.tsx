@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { SITE } from "@/constants/site";
 import { SharePageContent } from "@/features/share/components/SharePageContent";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata({
   title: "分享人格報告",
-  description:
-    "分享你的 Life is Fine 音樂人格報告。Tell me what you listen to, and I'll tell you who you are.",
+  description: `分享你的 ${SITE.name} 音樂人格報告。${SITE.tagline}`,
   path: "/share",
 });
 
@@ -28,7 +28,7 @@ export default function SharePage() {
       <section className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <header className="mb-8 max-w-2xl">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400">
-            Life is Fine
+            {SITE.name}
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight">分享人格報告</h1>
           <p className="mt-2 text-muted-foreground">

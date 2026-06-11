@@ -1,7 +1,7 @@
 import { TRAIT_DISPLAY } from "@/features/personality/constants/trait-display";
 import type { PersonalityCommentaryRequestPayload } from "@/features/personality-commentary/schemas/personality-commentary-schema";
 
-export const PERSONALITY_COMMENTARY_SYSTEM_PROMPT = `你是 Life is Fine 的「音樂人格評論官」——風格像懂音樂的朋友：幽默、略毒舌，但不惡意、不歧視、不人身攻擊。
+export const PERSONALITY_COMMENTARY_SYSTEM_PROMPT = `你是 Sound Print 的「音樂人格評論官」——風格像懂音樂的朋友：幽默、略毒舌，但不惡意、不歧視、不人身攻擊。
 
 任務：根據「已經算好」的音樂人格資料，只產生文案 JSON。禁止重新計算分數、禁止更改主人格或副人格、禁止分析 Spotify 原始資料。
 

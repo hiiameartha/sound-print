@@ -1,8 +1,10 @@
-# Life is Fine
+# Sound Prints
 
-以 Spotify 聆聽習慣推算音樂人格的生活紀錄平台。使用者連結 Spotify 後，系統分析 Top Artists／Tracks 與最近播放，產出六項人格特質、主人格／副人格原型，並可儲存歷史報告、分享卡片與比較相容性。
+以 Spotify 聆聽習慣推算音樂人格的平台（Sound Print）。使用者連結 Spotify 後，系統分析 Top Artists／Tracks 與最近播放，產出六項人格特質、主人格／副人格原型，並可儲存歷史報告、分享卡片與比較相容性。
 
 技術棧：Next.js App Router、TypeScript、Tailwind CSS v4、Zustand、Supabase、OpenAI（可選）。
+
+**正式站**：[https://sound-print.vercel.app](https://sound-print.vercel.app)
 
 ## 產品流程
 
@@ -195,7 +197,7 @@ sequenceDiagram
 | 環境 | Redirect URI 範例 |
 |------|-------------------|
 | 本機 | `http://127.0.0.1:3000/api/spotify/callback` |
-| Vercel 正式站 | `https://你的網域.vercel.app/api/spotify/callback` |
+| Vercel 正式站 | `https://sound-print.vercel.app/api/spotify/callback` |
 
 **2. `.env.local`（本機）**
 
@@ -213,13 +215,19 @@ SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/api/spotify/callback
 於 **Settings → Environment Variables** 設定：
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://你的網域.vercel.app
+NEXT_PUBLIC_SITE_URL=https://sound-print.vercel.app
 SPOTIFY_CLIENT_ID=你的-client-id
 SPOTIFY_CLIENT_SECRET=你的-client-secret
-SPOTIFY_REDIRECT_URI=https://你的網域.vercel.app/api/spotify/callback
+SPOTIFY_REDIRECT_URI=https://sound-print.vercel.app/api/spotify/callback
 ```
 
-儲存後需 **Redeploy** 才會生效。Dashboard 的 Redirect URI 也要加入同一條 HTTPS 網址。
+儲存後需 **Redeploy** 才會生效。Spotify Developer Dashboard 的 Redirect URI 也要加入：
+
+```
+https://sound-print.vercel.app/api/spotify/callback
+```
+
+若仍顯示舊品牌（Life is Fine），代表尚未部署最新程式或 `NEXT_PUBLIC_SITE_URL` 仍指向舊值。
 
 #### Redirect URI 規則（2025 年起）
 

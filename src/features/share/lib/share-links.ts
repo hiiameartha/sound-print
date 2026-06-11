@@ -9,7 +9,7 @@ export function buildShareText(data: ShareCardData): string {
 
   const lines = [
     `【${data.yearlyTitle}】`,
-    `Life is Fine · 音樂人格報告`,
+    `${SITE.name} · 音樂人格報告`,
     `🎧 主人格：${data.primaryShortName}`,
     `副人格：${data.secondaryArchetype.title.split("（")[0]?.trim()}`,
     ...traitLines,

@@ -5,6 +5,7 @@ import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Music2 } from "lucide-react";
 import { HeroAnimatedBackground } from "@/features/home/components/HeroAnimatedBackground";
 import { HeroPersonalityPreview } from "@/features/home/components/HeroPersonalityPreview";
+import { SITE } from "@/constants/site";
 import { cn } from "@/lib/utils";
 
 const containerVariants: Variants = {
@@ -58,14 +59,14 @@ export function HeroSection() {
             variants={itemVariants}
             className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
           >
-            Life is Fine
+            {SITE.name}
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
             className="mt-4 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            Tell me what you listen to, and I&apos;ll tell you who you are.
+            {SITE.tagline}
           </motion.p>
 
           <motion.div variants={itemVariants} className="mt-10">

@@ -5,7 +5,7 @@ export type NavItem = {
 
 export const MAIN_NAV: NavItem[] = [
   { label: "首頁", href: "/" },
-  { label: "Spotify 檢測", href: "/spotify" },
+  { label: "音樂人格檢測", href: "/spotify" },
   { label: "儀表板", href: "/dashboard" },
   { label: "歷史紀錄", href: "/profile" },
   { label: "相容性", href: "/compatibility" },

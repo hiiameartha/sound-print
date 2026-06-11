@@ -17,7 +17,7 @@ export function ProfileHistoryPanel() {
           ? "載入中…"
           : reports.length > 0
             ? `共 ${reports.length} 筆 · 依時間由新到舊`
-            : "完成 Spotify 檢測後會出現在這裡"
+            : "完成音樂人格檢測後會出現在這裡"
       }
     >
       {error ? (
@@ -33,13 +33,13 @@ export function ProfileHistoryPanel() {
       {!loading && reports.length === 0 && !error && (
         <div className="rounded-2xl border border-dashed border-border p-8 text-center">
           <p className="text-sm text-muted-foreground">
-            尚無儲存的報告。請先至 Spotify 檢測並確認分析結果。
+            尚無儲存的報告。請先至音樂人格檢測並確認分析結果。
           </p>
           <Link
             href="/spotify"
             className="mt-4 inline-flex text-sm font-medium text-cyan-600 underline-offset-4 hover:underline dark:text-cyan-400"
           >
-            前往 Spotify 檢測
+            前往音樂人格檢測
           </Link>
         </div>
       )}
