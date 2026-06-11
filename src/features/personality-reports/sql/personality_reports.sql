@@ -1,4 +1,4 @@
--- Life is Fine - 音樂人格報告
+- 音樂人格報告
 create extension if not exists pgcrypto;
 
 create table if not exists public.personality_reports (

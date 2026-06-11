@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { PersonalityCommentaryPanel } from "@/features/personality-commentary";
 import { PersonalityHeader } from "@/features/dashboard/components/PersonalityHeader";
 import { PersonalityRadarChart } from "@/features/dashboard/components/PersonalityRadarChart";
-import { PersonalityTraitCards } from "@/features/dashboard/components/PersonalityTraitCards";
 import { PrimaryArchetypeCard } from "@/features/dashboard/components/PrimaryArchetypeCard";
 import { SecondaryArchetypeCard } from "@/features/dashboard/components/SecondaryArchetypeCard";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
@@ -41,20 +40,15 @@ export function DashboardContent() {
         displayName={profile.highlights.displayName}
       />
 
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-        <div className="flex w-full flex-col gap-6 lg:w-[60%]">
-          <PrimaryArchetypeCard archetype={profile.primaryArchetype} />
-          <SecondaryArchetypeCard archetype={profile.secondaryArchetype} />
-          <PersonalityCommentaryPanel profile={profile} />
-          <PersonalityTraitCards
-            traits={profile.traits}
-            traitBreakdowns={profile.traitBreakdowns}
-          />
-        </div>
-
-        <div className="w-full shrink-0 lg:w-[40%]">
-          <PersonalityRadarChart traits={profile.traits} />
-        </div>
+      <div className="flex flex-col gap-6">
+        <PrimaryArchetypeCard archetype={profile.primaryArchetype} />
+        <SecondaryArchetypeCard archetype={profile.secondaryArchetype} />
+        <PersonalityCommentaryPanel profile={profile} />
+        <PersonalityRadarChart
+          traits={profile.traits}
+          title="特質寫照"
+          subtitle="六維人格輪廓 · 0–100"
+        />
       </div>
 
       {profile.insights ? (

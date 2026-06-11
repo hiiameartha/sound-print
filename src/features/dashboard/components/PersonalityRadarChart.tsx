@@ -12,9 +12,15 @@ ensureChartsRegistered();
 
 type PersonalityRadarChartProps = {
   traits: PersonalityTraits;
+  title?: string;
+  subtitle?: string;
 };
 
-export function PersonalityRadarChart({ traits }: PersonalityRadarChartProps) {
+export function PersonalityRadarChart({
+  traits,
+  title = "人格雷達",
+  subtitle = "輔助參考 · 0–100",
+}: PersonalityRadarChartProps) {
   const theme = useChartTheme();
 
   const chartData = useMemo(
@@ -74,7 +80,7 @@ export function PersonalityRadarChart({ traits }: PersonalityRadarChartProps) {
 
   if (!theme.mounted) {
     return (
-      <DashboardCard title="人格雷達" subtitle="六維特質視覺化">
+      <DashboardCard title={title} subtitle={subtitle}>
         <div className="flex h-80 items-center justify-center">
           <p className="font-mono text-xs text-muted-foreground">載入圖表…</p>
         </div>
@@ -83,7 +89,7 @@ export function PersonalityRadarChart({ traits }: PersonalityRadarChartProps) {
   }
 
   return (
-    <DashboardCard title="人格雷達" subtitle="輔助參考 · 0–100">
+    <DashboardCard title={title} subtitle={subtitle}>
       <div className="h-80 lg:h-[420px]">
         <Radar data={chartData} options={options} />
       </div>
