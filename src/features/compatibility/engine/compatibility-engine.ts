@@ -9,17 +9,35 @@ import type {
   CompatibilityTraitDelta,
 } from "@/features/compatibility/types";
 
+/** 口味／曲風取向 → 音樂重疊 */
 const TASTE_TRAITS: PersonalityTraitKey[] = [
   "explorer",
   "nostalgia",
   "adventurous",
 ];
 
+/** 情緒與社交氛圍 → 情緒同步 */
 const MOOD_TRAITS: PersonalityTraitKey[] = [
   "emotional",
   "romantic",
   "social",
 ];
+
+/** 互動面向 → 人格互補（與其他維度相同：各特質接近度平均） */
+const COMPLEMENT_TRAITS: PersonalityTraitKey[] = [
+  "romantic",
+  "social",
+  "adventurous",
+];
+
+export const COMPATIBILITY_DIMENSION_HINTS: Record<
+  CompatibilityDimension["key"],
+  string
+> = {
+  musicOverlap: "探索值、懷舊值、冒險值接近度的平均",
+  personalityComplement: "浪漫／社交／冒險接近度的平均（完全相同為 100%）",
+  emotionalSync: "情緒值、浪漫值、社交值接近度的平均",
+};
 
 function traitSimilarity(a: number, b: number): number {
   return 100 - Math.abs(a - b);
@@ -28,17 +46,6 @@ function traitSimilarity(a: number, b: number): number {
 function average(nums: number[]): number {
   if (nums.length === 0) return 0;
   return nums.reduce((sum, value) => sum + value, 0) / nums.length;
-}
-
-function complementTraitScore(a: number, b: number): number {
-  const delta = Math.abs(a - b);
-  if (delta >= 14 && delta <= 38) {
-    return Math.round(88 - Math.abs(delta - 26) * 1.2);
-  }
-  if (delta < 14) {
-    return Math.round(52 + delta * 2.2);
-  }
-  return Math.round(Math.max(28, 96 - (delta - 38) * 1.8));
 }
 
 function reportLabel(report: PersonalityReport): string {
@@ -73,25 +80,11 @@ function computeMusicOverlap(
   const traitsA = reportA.profile.traits;
   const traitsB = reportB.profile.traits;
 
-  const tasteSimilarity = average(
-    TASTE_TRAITS.map((key) => traitSimilarity(traitsA[key], traitsB[key])),
+  return Math.round(
+    average(
+      TASTE_TRAITS.map((key) => traitSimilarity(traitsA[key], traitsB[key])),
+    ),
   );
-
-  let bonus = 0;
-  const topA = reportA.profile.highlights.topArtist;
-  const topB = reportB.profile.highlights.topArtist;
-  if (topA && topB && topA === topB) bonus += 18;
-
-  const primaryA = reportA.profile.primaryArchetype.id;
-  const primaryB = reportB.profile.primaryArchetype.id;
-  if (primaryA === primaryB) bonus += 12;
-
-  const genreDelta = Math.abs(
-    reportA.profile.highlights.genreCount - reportB.profile.highlights.genreCount,
-  );
-  const genreBonus = Math.max(0, 10 - genreDelta);
-
-  return Math.round(Math.min(100, tasteSimilarity * 0.78 + bonus + genreBonus));
 }
 
 function computePersonalityComplement(
@@ -101,22 +94,13 @@ function computePersonalityComplement(
   const traitsA = reportA.profile.traits;
   const traitsB = reportB.profile.traits;
 
-  const complementAverage = average(
-    TRAIT_DISPLAY.map((display) =>
-      complementTraitScore(traitsA[display.key], traitsB[display.key]),
+  return Math.round(
+    average(
+      COMPLEMENT_TRAITS.map((key) =>
+        traitSimilarity(traitsA[key], traitsB[key]),
+      ),
     ),
   );
-
-  const primaryA = reportA.profile.primaryArchetype.id;
-  const primaryB = reportB.profile.primaryArchetype.id;
-  const secondaryA = reportA.profile.secondaryArchetype.id;
-  const secondaryB = reportB.profile.secondaryArchetype.id;
-
-  let archetypeBonus = 0;
-  if (primaryA !== primaryB) archetypeBonus += 8;
-  if (primaryA === secondaryB || primaryB === secondaryA) archetypeBonus += 6;
-
-  return Math.round(Math.min(100, complementAverage + archetypeBonus));
 }
 
 function computeEmotionalSync(
@@ -232,17 +216,28 @@ export function comparePersonalityReports(
   const emotionalSync = computeEmotionalSync(reportA, reportB);
 
   const dimensions: CompatibilityDimension[] = [
-    { key: "musicOverlap", label: "音樂重疊", score: musicOverlap },
+    {
+      key: "musicOverlap",
+      label: "音樂重疊",
+      score: musicOverlap,
+      hint: COMPATIBILITY_DIMENSION_HINTS.musicOverlap,
+    },
     {
       key: "personalityComplement",
       label: "人格互補",
       score: personalityComplement,
+      hint: COMPATIBILITY_DIMENSION_HINTS.personalityComplement,
     },
-    { key: "emotionalSync", label: "情緒同步", score: emotionalSync },
+    {
+      key: "emotionalSync",
+      label: "情緒同步",
+      score: emotionalSync,
+      hint: COMPATIBILITY_DIMENSION_HINTS.emotionalSync,
+    },
   ];
 
   const score = Math.round(
-    musicOverlap * 0.3 + personalityComplement * 0.35 + emotionalSync * 0.35,
+    (musicOverlap + personalityComplement + emotionalSync) / 3,
   );
 
   const scenarios = computeScenarios(reportA, reportB);

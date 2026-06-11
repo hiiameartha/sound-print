@@ -1,49 +1,43 @@
 import type { ChartData } from "chart.js";
 import { TRAIT_DISPLAY } from "@/features/personality/constants/trait-display";
 import { CHART_PALETTE } from "@/features/dashboard/constants/chart-colors";
-import { TRAIT_CHART_COLORS } from "@/features/share/constants/trait-colors";
 import type { PersonalityTraits } from "@/features/personality/types/traits";
 
-type BuildRadarChartOptions = {
-  label?: string;
-  showBaseline?: boolean;
-};
-
-export function buildPersonalityRadarChartData(
-  traits: PersonalityTraits,
+export function buildCompatibilityRadarChartData(
+  traitsA: PersonalityTraits,
+  traitsB: PersonalityTraits,
+  labelA: string,
+  labelB: string,
   foreground: string,
-  options: BuildRadarChartOptions = {},
 ) {
-  const { label = "人格特質", showBaseline = true } = options;
   const labels = TRAIT_DISPLAY.map((d) => `${d.emoji} ${d.label}`);
 
   const datasets: Record<string, unknown>[] = [
     {
-      label,
-      data: TRAIT_DISPLAY.map((d) => traits[d.key]),
+      label: labelA,
+      data: TRAIT_DISPLAY.map((d) => traitsA[d.key]),
       backgroundColor: CHART_PALETTE.primaryFill,
       borderColor: CHART_PALETTE.primary,
       borderWidth: 2,
-      pointBackgroundColor: TRAIT_DISPLAY.map((d) => TRAIT_CHART_COLORS[d.key]),
+      pointBackgroundColor: CHART_PALETTE.primary,
+      pointBorderColor: foreground,
+      pointHoverBackgroundColor: CHART_PALETTE.primary,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    },
+    {
+      label: labelB,
+      data: TRAIT_DISPLAY.map((d) => traitsB[d.key]),
+      backgroundColor: CHART_PALETTE.secondaryFill,
+      borderColor: CHART_PALETTE.secondary,
+      borderWidth: 2,
+      pointBackgroundColor: CHART_PALETTE.secondary,
       pointBorderColor: foreground,
       pointHoverBackgroundColor: CHART_PALETTE.secondary,
       pointRadius: 4,
       pointHoverRadius: 6,
     },
   ];
-
-  if (showBaseline) {
-    datasets.push({
-      label: "基準線 (50)",
-      data: TRAIT_DISPLAY.map(() => 50),
-      backgroundColor: CHART_PALETTE.secondaryFill,
-      borderColor: CHART_PALETTE.secondary,
-      borderWidth: 1,
-      borderDash: [6, 4],
-      pointRadius: 0,
-      pointHoverRadius: 0,
-    });
-  }
 
   return { labels, datasets } as unknown as ChartData<"radar", number[], string>;
 }

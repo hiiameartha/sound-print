@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PersonalityCommentaryPanel } from "@/features/personality-commentary";
 import { PersonalityHeader } from "@/features/dashboard/components/PersonalityHeader";
-import { PersonalityRadarChart } from "@/features/dashboard/components/PersonalityRadarChart";
 import { PrimaryArchetypeCard } from "@/features/dashboard/components/PrimaryArchetypeCard";
 import { SecondaryArchetypeCard } from "@/features/dashboard/components/SecondaryArchetypeCard";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
@@ -44,11 +43,6 @@ export function DashboardContent() {
         <PrimaryArchetypeCard archetype={profile.primaryArchetype} />
         <SecondaryArchetypeCard archetype={profile.secondaryArchetype} />
         <PersonalityCommentaryPanel profile={profile} />
-        <PersonalityRadarChart
-          traits={profile.traits}
-          title="特質寫照"
-          subtitle="六維人格輪廓 · 0–100"
-        />
       </div>
 
       {profile.insights ? (

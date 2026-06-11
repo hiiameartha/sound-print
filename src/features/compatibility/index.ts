@@ -1,6 +1,10 @@
 export { CompatibilityPanel } from "@/features/compatibility/components/CompatibilityPanel";
 export { CompatibilityResultView } from "@/features/compatibility/components/CompatibilityResultView";
-export { comparePersonalityReports } from "@/features/compatibility/engine/compatibility-engine";
+export { CompatibilityTraitRadarChart } from "@/features/compatibility/components/CompatibilityTraitRadarChart";
+export {
+  comparePersonalityReports,
+  COMPATIBILITY_DIMENSION_HINTS,
+} from "@/features/compatibility/engine/compatibility-engine";
 export {
   buildCompatibilityInviteUrl,
   buildSpotifyComparePath,

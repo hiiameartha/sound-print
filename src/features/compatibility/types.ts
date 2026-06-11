@@ -16,6 +16,7 @@ export type CompatibilityDimension = {
   key: CompatibilityDimensionKey;
   label: string;
   score: number;
+  hint?: string;
 };
 
 export type CompatibilityScenarioKey = "travel" | "work" | "karaoke";

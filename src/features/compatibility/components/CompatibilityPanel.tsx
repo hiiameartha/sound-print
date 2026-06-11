@@ -44,7 +44,7 @@ export function CompatibilityPanel() {
   const [friendReport, setFriendReport] = useState<PersonalityReport | null>(
     null,
   );
-  const [friendLoading, setFriendLoading] = useState(Boolean(friendReportId));
+  const [friendLoading, setFriendLoading] = useState(false);
   const [friendError, setFriendError] = useState<string | null>(null);
   const [inviteStatus, setInviteStatus] = useState<string | null>(null);
   const [shareReportId, setShareReportId] = useState<string>("");
@@ -55,16 +55,14 @@ export function CompatibilityPanel() {
   }, [friendReportId]);
 
   useEffect(() => {
-    if (!friendReportId) {
-      setFriendLoading(false);
-      return;
-    }
+    if (!friendReportId) return;
 
     let cancelled = false;
 
     void (async () => {
       setFriendLoading(true);
       setFriendError(null);
+      setFriendReport(null);
       try {
         const report = await reportsService.getReport(friendReportId);
         if (cancelled) return;
@@ -86,6 +84,9 @@ export function CompatibilityPanel() {
       cancelled = true;
     };
   }, [friendReportId, reportsService]);
+
+  const isFriendLoading = Boolean(friendReportId) && friendLoading;
+  const activeFriendReport = friendReportId ? friendReport : null;
 
   const myReport = useMemo((): PersonalityReport | null => {
     if (storeProfile && storeReportId) {
@@ -118,9 +119,9 @@ export function CompatibilityPanel() {
     : null;
 
   const friendCompareResult = useMemo(() => {
-    if (!friendReport || !myReport) return null;
-    return comparePersonalityReports(friendReport, myReport);
-  }, [friendReport, myReport]);
+    if (!activeFriendReport || !myReport) return null;
+    return comparePersonalityReports(activeFriendReport, myReport);
+  }, [activeFriendReport, myReport]);
 
   const handleCompare = () => {
     if (!reportA || !reportB || reportA.id === reportB.id) return;
@@ -137,7 +138,7 @@ export function CompatibilityPanel() {
     }
   }, [inviteUrl]);
 
-  if (loading || friendLoading) {
+  if (loading || isFriendLoading) {
     return (
       <DashboardCard title="音樂相容性">
         <div className="flex min-h-[200px] items-center justify-center">
@@ -147,11 +148,11 @@ export function CompatibilityPanel() {
     );
   }
 
-  if (friendReportId && friendReport && !myReport) {
+  if (friendReportId && activeFriendReport && !myReport) {
     const spotifyComparePath = buildSpotifyComparePath(friendReportId);
     const friendName =
-      friendReport.profile.highlights.displayName ??
-      friendReport.profile.primaryArchetype.title.split("（")[0]?.trim();
+      activeFriendReport.profile.highlights.displayName ??
+      activeFriendReport.profile.primaryArchetype.title.split("（")[0]?.trim();
 
     return (
       <div className="space-y-6">
@@ -244,8 +245,12 @@ export function CompatibilityPanel() {
         </DashboardCard>
       ) : null}
 
-      {friendCompareResult ? (
-        <CompatibilityResultView result={friendCompareResult} />
+      {friendCompareResult && activeFriendReport && myReport ? (
+        <CompatibilityResultView
+          result={friendCompareResult}
+          traitsA={activeFriendReport.profile.traits}
+          traitsB={myReport.profile.traits}
+        />
       ) : null}
 
       {!friendReportId && reports.length < 2 && !myReport ? (
@@ -337,8 +342,12 @@ export function CompatibilityPanel() {
         </DashboardCard>
       ) : null}
 
-      {result && !friendReport ? (
-        <CompatibilityResultView result={result} />
+      {result && reportA && reportB && !activeFriendReport ? (
+        <CompatibilityResultView
+          result={result}
+          traitsA={reportA.profile.traits}
+          traitsB={reportB.profile.traits}
+        />
       ) : null}
     </div>
   );

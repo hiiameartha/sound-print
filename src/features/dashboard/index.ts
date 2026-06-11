@@ -2,6 +2,7 @@ export { DashboardContent } from "./components/DashboardContent";
 export { DashboardInsightsPanel } from "./components/DashboardInsightsPanel";
 export { PersonalityHeader } from "./components/PersonalityHeader";
 export { PersonalityRadarChart } from "./components/PersonalityRadarChart";
+export { PersonalityRadarPlot } from "./components/PersonalityRadarPlot";
 export { PersonalityTraitCards } from "./components/PersonalityTraitCards";
 export { PrimaryArchetypeCard } from "./components/PrimaryArchetypeCard";
 export { SecondaryArchetypeCard } from "./components/SecondaryArchetypeCard";

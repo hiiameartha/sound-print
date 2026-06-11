@@ -1,11 +1,15 @@
 "use client";
 
+import { CompatibilityTraitRadarChart } from "@/features/compatibility/components/CompatibilityTraitRadarChart";
 import type { CompatibilityResult } from "@/features/compatibility/types";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
+import type { PersonalityTraits } from "@/features/personality/types/traits";
 import { cn } from "@/lib/utils";
 
 type CompatibilityResultViewProps = {
   result: CompatibilityResult;
+  traitsA: PersonalityTraits;
+  traitsB: PersonalityTraits;
 };
 
 const SCENARIO_LEVEL_STYLES = {
@@ -15,7 +19,11 @@ const SCENARIO_LEVEL_STYLES = {
   weak: "text-rose-600 dark:text-rose-400",
 } as const;
 
-export function CompatibilityResultView({ result }: CompatibilityResultViewProps) {
+export function CompatibilityResultView({
+  result,
+  traitsA,
+  traitsB,
+}: CompatibilityResultViewProps) {
   return (
     <DashboardCard title="相容性結果">
       <div className="text-center">
@@ -27,6 +35,9 @@ export function CompatibilityResultView({ result }: CompatibilityResultViewProps
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
           {result.labelA} × {result.labelB}
+        </p>
+        <p className="mt-1 text-[11px] text-muted-foreground/80">
+          三項維度平均
         </p>
       </div>
 
@@ -40,6 +51,11 @@ export function CompatibilityResultView({ result }: CompatibilityResultViewProps
             <p className="mt-1 text-2xl font-bold tabular-nums text-foreground">
               {dimension.score}%
             </p>
+            {dimension.hint ? (
+              <p className="mt-2 text-[10px] leading-snug text-muted-foreground">
+                {dimension.hint}
+              </p>
+            ) : null}
           </div>
         ))}
       </div>
@@ -75,39 +91,17 @@ export function CompatibilityResultView({ result }: CompatibilityResultViewProps
         </ul>
       </div>
 
-      <details className="mt-8 group">
-        <summary className="cursor-pointer font-mono text-xs uppercase tracking-widest text-muted-foreground">
+      <div className="mt-8">
+        <p className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
           特質對照
-        </summary>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {result.traitDetails.map((item) => (
-            <li
-              key={item.key}
-              className="rounded-xl border border-border/70 bg-muted/20 px-4 py-3 text-sm"
-            >
-              <span className="font-medium">
-                {item.label} {item.emoji}
-              </span>
-              <span className="mt-1 block font-mono text-xs text-muted-foreground">
-                {item.scoreA} → {item.scoreB}
-                {item.delta !== 0 && (
-                  <span
-                    className={cn(
-                      "ml-2",
-                      item.delta > 0
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-rose-600 dark:text-rose-400",
-                    )}
-                  >
-                    ({item.delta > 0 ? "+" : ""}
-                    {item.delta})
-                  </span>
-                )}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </details>
+        </p>
+        <CompatibilityTraitRadarChart
+          traitsA={traitsA}
+          traitsB={traitsB}
+          labelA={result.labelA}
+          labelB={result.labelB}
+        />
+      </div>
     </DashboardCard>
   );
 }
