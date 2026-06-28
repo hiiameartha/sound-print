@@ -15,7 +15,6 @@ export function SharePageContent() {
   const reportId = searchParams.get("report");
 
   const storeProfile = usePersonalityReportStore((s) => s.profile);
-  const storeReportId = usePersonalityReportStore((s) => s.reportId);
 
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
   const [commentary, setCommentary] = useState<PersonalityCommentary | null>(
@@ -92,7 +91,6 @@ export function SharePageContent() {
     <SharePanel
       profile={profile}
       initialCommentary={commentary}
-      reportId={reportId ?? storeReportId}
     />
   );
 }

@@ -8,11 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Copy, Download, Loader2, Share2, Users } from "lucide-react";
-import {
-  buildCompatibilityInviteUrl,
-  COMPATIBILITY_INVITE_CTA,
-} from "@/features/compatibility/lib/build-compatibility-invite-url";
+import { Copy, Download, Loader2, Share2 } from "lucide-react";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
 import { SHARE_CARD_WIDTH } from "@/features/share/constants";
 import { buildShareCardData } from "@/features/share/lib/build-share-card-data";
@@ -42,13 +38,11 @@ type SharePanelProps = {
   profile: PersonalityProfile;
   /** 從 DB 載入的歷史報告評論（/share?report=） */
   initialCommentary?: PersonalityCommentary | null;
-  reportId?: string | null;
 };
 
 export function SharePanel({
   profile,
   initialCommentary = null,
-  reportId,
 }: SharePanelProps) {
   const exportRef = useRef<HTMLDivElement>(null);
   const previewShellRef = useRef<HTMLDivElement>(null);
@@ -75,10 +69,6 @@ export function SharePanel({
 
   const shareText = useMemo(() => buildShareText(cardData), [cardData]);
   const inviteUrl = useMemo(() => buildShareInviteUrl(), []);
-  const compatibilityInviteUrl = useMemo(
-    () => (reportId ? buildCompatibilityInviteUrl(reportId) : null),
-    [reportId],
-  );
   const [inviteQrDataUrl, setInviteQrDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -170,16 +160,6 @@ export function SharePanel({
       setStatusMessage("複製失敗，請手動選取文字");
     }
   }, [shareText]);
-
-  const handleCopyCompatibilityInvite = useCallback(async () => {
-    if (!compatibilityInviteUrl) return;
-    try {
-      await navigator.clipboard.writeText(compatibilityInviteUrl);
-      setStatusMessage("已複製相容性邀請連結");
-    } catch {
-      setStatusMessage("複製失敗，請手動選取連結");
-    }
-  }, [compatibilityInviteUrl]);
 
   const handleLine = useCallback(() => {
     openShareWindow(buildLineShareUrl(shareText));
@@ -289,25 +269,6 @@ export function SharePanel({
               label="複製文案"
             />
           </div>
-
-          {compatibilityInviteUrl ? (
-            <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
-              <p className="flex items-center gap-2 text-sm font-medium text-foreground">
-                <Users className="h-4 w-4 text-violet-600 dark:text-violet-400" aria-hidden />
-                {COMPATIBILITY_INVITE_CTA.headline}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {COMPATIBILITY_INVITE_CTA.steps}
-              </p>
-              <ActionButton
-                onClick={() => void handleCopyCompatibilityInvite()}
-                disabled={isExporting}
-                icon={<Copy className="h-4 w-4" aria-hidden />}
-                label={COMPATIBILITY_INVITE_CTA.action}
-                className="mt-3 border-violet-500/40 text-violet-700 hover:bg-violet-500/10 dark:text-violet-300"
-              />
-            </div>
-          ) : null}
 
           {statusMessage && (
             <p className="font-mono text-xs text-cyan-600 dark:text-cyan-400">

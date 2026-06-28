@@ -1,6 +1,7 @@
 "use client";
 
 import { CompatibilityTraitRadarChart } from "@/features/compatibility/components/CompatibilityTraitRadarChart";
+import { MUSIC_MATCH_LABELS } from "@/features/compatibility/lib/build-compatibility-invite-url";
 import type { CompatibilityResult } from "@/features/compatibility/types";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
 import type { PersonalityTraits } from "@/features/personality/types/traits";
@@ -25,10 +26,10 @@ export function CompatibilityResultView({
   traitsB,
 }: CompatibilityResultViewProps) {
   return (
-    <DashboardCard title="相容性結果">
+    <DashboardCard title={MUSIC_MATCH_LABELS.resultTitle}>
       <div className="text-center">
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          相容指數
+          {MUSIC_MATCH_LABELS.scoreLabel}
         </p>
         <p className="mt-2 text-6xl font-bold tabular-nums text-cyan-600 dark:text-cyan-400">
           {result.score}%

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Loader2, Share2, Users } from "lucide-react";
+import { Loader2, Share2 } from "lucide-react";
 import { DashboardCard } from "@/features/dashboard/components/DashboardCard";
 import { usePersonalityReports } from "@/features/personality-reports";
 import { cn } from "@/lib/utils";
@@ -42,19 +42,6 @@ export function ProfileHistoryPanel() {
             前往音樂人格檢測
           </Link>
         </div>
-      )}
-
-      {!loading && reports.length >= 2 && (
-        <Link
-          href="/compatibility"
-          className={cn(
-            "mb-6 flex items-center justify-center gap-2 rounded-2xl border border-violet-500/30 bg-violet-500/5 px-4 py-3 text-sm font-medium",
-            "text-violet-700 hover:bg-violet-500/10 dark:text-violet-300",
-          )}
-        >
-          <Users className="h-4 w-4" aria-hidden />
-          比較兩份報告的相容性
-        </Link>
       )}
 
       {!loading && reports.length > 0 && (

@@ -35,7 +35,7 @@ export const COMPATIBILITY_DIMENSION_HINTS: Record<
   string
 > = {
   musicOverlap: "探索值、懷舊值、冒險值接近度的平均",
-  personalityComplement: "浪漫／社交／冒險接近度的平均（完全相同為 100%）",
+  personalityComplement: "浪漫／社交／冒險接近度的平均（越接近代表喜好越像）",
   emotionalSync: "情緒值、浪漫值、社交值接近度的平均",
 };
 
@@ -218,19 +218,19 @@ export function comparePersonalityReports(
   const dimensions: CompatibilityDimension[] = [
     {
       key: "musicOverlap",
-      label: "音樂重疊",
+      label: "口味相似",
       score: musicOverlap,
       hint: COMPATIBILITY_DIMENSION_HINTS.musicOverlap,
     },
     {
       key: "personalityComplement",
-      label: "人格互補",
+      label: "聆聽風格",
       score: personalityComplement,
       hint: COMPATIBILITY_DIMENSION_HINTS.personalityComplement,
     },
     {
       key: "emotionalSync",
-      label: "情緒同步",
+      label: "心情頻率",
       score: emotionalSync,
       hint: COMPATIBILITY_DIMENSION_HINTS.emotionalSync,
     },

@@ -7,9 +7,12 @@ export {
 } from "@/features/compatibility/engine/compatibility-engine";
 export {
   buildCompatibilityInviteUrl,
+  buildDashboardMusicMatchPath,
   buildSpotifyComparePath,
   buildSpotifyCompareUrl,
   COMPATIBILITY_INVITE_CTA,
+  MUSIC_MATCH_LABELS,
+  MUSIC_MATCH_SECTION_ID,
 } from "@/features/compatibility/lib/build-compatibility-invite-url";
 export type {
   CompatibilityDimension,

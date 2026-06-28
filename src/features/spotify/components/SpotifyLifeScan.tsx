@@ -163,7 +163,9 @@ export function SpotifyLifeScan() {
 
     const compatTarget = compareReportId ?? readCompatibilityTarget();
     if (compatTarget) {
-      router.push(`/compatibility?with=${encodeURIComponent(compatTarget)}`);
+      router.push(
+        `/dashboard?with=${encodeURIComponent(compatTarget)}#music-match`,
+      );
       return;
     }
 
@@ -199,7 +201,7 @@ export function SpotifyLifeScan() {
       <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-5 sm:p-10">
         {compareReportId ? (
           <p className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-3 text-sm leading-relaxed text-foreground">
-            朋友邀請你比較 Spotify 音樂相容性！連結帳號後，就能看見你們的音樂重疊與合拍建議。
+            朋友邀請你比較音樂喜好！連結帳號後，就能看見你們的口味相似度與合拍建議。
           </p>
         ) : fromShare ? (
           <p className="rounded-lg border border-[#1DB954]/30 bg-[#1DB954]/10 px-4 py-3 text-sm leading-relaxed text-foreground">

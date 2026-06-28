@@ -8,7 +8,6 @@ export const MAIN_NAV: NavItem[] = [
   { label: "音樂人格檢測", href: "/spotify" },
   { label: "儀表板", href: "/dashboard" },
   { label: "歷史紀錄", href: "/profile" },
-  { label: "相容性", href: "/compatibility" },
   { label: "關於", href: "/about" },
   { label: "聯絡", href: "/contact" },
 ];

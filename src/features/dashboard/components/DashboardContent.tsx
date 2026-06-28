@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { CompatibilityPanel } from "@/features/compatibility";
+import {
+  buildSpotifyComparePath,
+  COMPATIBILITY_COMPARE_PARAM,
+} from "@/features/compatibility/lib/build-compatibility-invite-url";
 import { PersonalityCommentaryPanel } from "@/features/personality-commentary";
 import { PersonalityHeader } from "@/features/dashboard/components/PersonalityHeader";
 import { PrimaryArchetypeCard } from "@/features/dashboard/components/PrimaryArchetypeCard";
@@ -11,16 +16,28 @@ import { DashboardInsightsPanel } from "@/features/dashboard/components/Dashboar
 import { SharePanel } from "@/features/share";
 import { usePersonalityReportStore } from "@/store/personality-report-store";
 
-export function DashboardContent() {
+function MusicMatchFallback() {
+  return (
+    <DashboardCard title="與好友的音樂合拍">
+      <p className="font-mono text-sm text-muted-foreground">載入音樂合拍…</p>
+    </DashboardCard>
+  );
+}
+
+function DashboardContentInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const friendReportId = searchParams.get(COMPATIBILITY_COMPARE_PARAM);
   const profile = usePersonalityReportStore((state) => state.profile);
-  const reportId = usePersonalityReportStore((state) => state.reportId);
 
   useEffect(() => {
-    if (!profile) {
-      router.replace("/spotify");
+    if (profile) return;
+    if (friendReportId) {
+      router.replace(buildSpotifyComparePath(friendReportId));
+      return;
     }
-  }, [profile, router]);
+    router.replace("/spotify");
+  }, [profile, friendReportId, router]);
 
   if (!profile) {
     return (
@@ -58,7 +75,17 @@ export function DashboardContent() {
         </DashboardCard>
       )}
 
-      <SharePanel profile={profile} reportId={reportId} />
+      <CompatibilityPanel />
+
+      <SharePanel profile={profile} />
     </div>
+  );
+}
+
+export function DashboardContent() {
+  return (
+    <Suspense fallback={<MusicMatchFallback />}>
+      <DashboardContentInner />
+    </Suspense>
   );
 }
