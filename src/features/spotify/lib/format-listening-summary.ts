@@ -78,7 +78,6 @@ function toTrackItem(
 
 export function formatSpotifyListeningSummary(
   data: SpotifyListeningData,
-  playedAtByTrackId?: Map<string, string>,
 ): SpotifyListeningSummary {
   const displayName =
     data.user.display_name?.trim() || data.user.id || "Spotify 使用者";
@@ -102,9 +101,9 @@ export function formatSpotifyListeningSummary(
     topTracksShort: data.topTracksShort.map((track, index) =>
       toTrackItem(track, { rank: index + 1 }),
     ),
-    recentlyPlayed: data.recentlyPlayedTracks.map((track) =>
-      toTrackItem(track, {
-        playedAt: playedAtByTrackId?.get(track.id) ?? null,
+    recentlyPlayed: data.recentlyPlayedTracks.map((entry) =>
+      toTrackItem(entry.track, {
+        playedAt: entry.playedAt,
       }),
     ),
   };

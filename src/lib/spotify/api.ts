@@ -20,6 +20,13 @@ export type SpotifyAlbum = {
   id?: string;
   name: string;
   images?: SpotifyImage[];
+  release_date?: string;
+};
+
+export type SpotifyAudioFeatures = {
+  id: string;
+  valence: number;
+  energy: number;
 };
 
 export type SpotifyTrack = {
@@ -30,12 +37,18 @@ export type SpotifyTrack = {
   album?: SpotifyAlbum;
 };
 
+export type RecentlyPlayedEntry = {
+  track: SpotifyTrack;
+  playedAt: string | null;
+};
+
 export type SpotifyListeningData = {
   user: SpotifyUser;
   topArtistsShort: SpotifyArtist[];
   topArtistsMedium: SpotifyArtist[];
   topTracksShort: SpotifyTrack[];
-  recentlyPlayedTracks: SpotifyTrack[];
+  recentlyPlayedTracks: RecentlyPlayedEntry[];
+  audioFeaturesByTrackId: Record<string, SpotifyAudioFeatures>;
 };
 
 type PagedArtists = { items: SpotifyArtist[] };
@@ -45,6 +58,50 @@ type RecentlyPlayedItem = {
 };
 type PagedTracks = { items: RecentlyPlayedItem[] };
 type TopTracksResponse = { items: SpotifyTrack[] };
+type AudioFeaturesResponse = {
+  audio_features: (SpotifyAudioFeatures | null)[];
+};
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    batches.push(items.slice(i, i + size));
+  }
+  return batches;
+}
+
+async function fetchAudioFeatures(
+  accessToken: string,
+  trackIds: string[],
+): Promise<Record<string, SpotifyAudioFeatures>> {
+  const uniqueIds = [...new Set(trackIds.filter((id) => id.length > 0))];
+  if (uniqueIds.length === 0) return {};
+
+  const byId: Record<string, SpotifyAudioFeatures> = {};
+
+  for (const batch of chunk(uniqueIds, 100)) {
+    try {
+      const data = await spotifyFetch<AudioFeaturesResponse>(
+        `/audio-features?ids=${batch.join(",")}`,
+        accessToken,
+      );
+
+      for (const feature of data.audio_features) {
+        if (
+          feature?.id &&
+          typeof feature.valence === "number" &&
+          typeof feature.energy === "number"
+        ) {
+          byId[feature.id] = feature;
+        }
+      }
+    } catch (err) {
+      logSpotifyDev("audio-features batch failed", err);
+    }
+  }
+
+  return byId;
+}
 
 function logSpotifyDev(label: string, data: unknown): void {
   if (process.env.NODE_ENV !== "development") return;
@@ -98,34 +155,29 @@ async function fetchTopTracks(
 async function fetchRecentlyPlayed(
   accessToken: string,
   limit = 50,
-): Promise<{ tracks: SpotifyTrack[]; playedAtByTrackId: Map<string, string> }> {
+): Promise<RecentlyPlayedEntry[]> {
   const data = await spotifyFetch<PagedTracks>(
     `/me/player/recently-played?limit=${limit}`,
     accessToken,
   );
 
-  const tracks: SpotifyTrack[] = [];
-  const playedAtByTrackId = new Map<string, string>();
+  const entries: RecentlyPlayedEntry[] = [];
 
   for (const item of data.items) {
     const track = item.track;
     if (!track?.id || !Array.isArray(track.artists)) continue;
-    tracks.push(track);
-    if (item.played_at) {
-      playedAtByTrackId.set(track.id, item.played_at);
-    }
+    entries.push({
+      track,
+      playedAt: item.played_at ?? null,
+    });
   }
 
-  return { tracks, playedAtByTrackId };
+  return entries;
 }
-
-export type SpotifyListeningFetchMeta = {
-  playedAtByTrackId: Map<string, string>;
-};
 
 export async function fetchSpotifyListeningData(
   accessToken: string,
-): Promise<SpotifyListeningData & SpotifyListeningFetchMeta> {
+): Promise<SpotifyListeningData> {
   const [
     user,
     topArtistsShort,
@@ -140,15 +192,21 @@ export async function fetchSpotifyListeningData(
     fetchRecentlyPlayed(accessToken),
   ]);
 
-  const { tracks: recentlyPlayedTracks, playedAtByTrackId } = recentlyPlayed;
+  const recentlyPlayedTracks = recentlyPlayed;
 
-  const listening: SpotifyListeningData & SpotifyListeningFetchMeta = {
+  const trackIds = [
+    ...topTracksShort.map((track) => track.id),
+    ...recentlyPlayedTracks.map((entry) => entry.track.id),
+  ];
+  const audioFeaturesByTrackId = await fetchAudioFeatures(accessToken, trackIds);
+
+  const listening: SpotifyListeningData = {
     user,
     topArtistsShort,
     topArtistsMedium,
     topTracksShort,
     recentlyPlayedTracks,
-    playedAtByTrackId,
+    audioFeaturesByTrackId,
   };
 
   logSpotifyDev("processed listening", listening);
@@ -162,7 +220,7 @@ export async function fetchSpotifyListeningData(
     },
     sampleTopArtistShort: topArtistsShort[0] ?? null,
     sampleTopTrack: topTracksShort[0] ?? null,
-    sampleRecentTrack: recentlyPlayedTracks[0] ?? null,
+    sampleRecentTrack: recentlyPlayedTracks[0]?.track ?? null,
   });
 
   return listening;

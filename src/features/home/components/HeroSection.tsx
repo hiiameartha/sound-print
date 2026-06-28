@@ -2,17 +2,20 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Music2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroAnimatedBackground } from "@/features/home/components/HeroAnimatedBackground";
-import { HeroPersonalityPreview } from "@/features/home/components/HeroPersonalityPreview";
-import { SITE } from "@/constants/site";
+import { HeroPersonalityCarousel } from "@/features/home/components/HeroPersonalityCarousel";
 import { cn } from "@/lib/utils";
+
+type HeroSectionProps = {
+  analyzedCount: number | null;
+};
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
   },
 };
 
@@ -27,60 +30,56 @@ const itemVariants: Variants = {
 
 const MotionLink = motion.create(Link);
 
-export function HeroSection() {
+export function HeroSection({ analyzedCount }: HeroSectionProps) {
   return (
     <section className="relative flex min-h-[calc(100dvh-4rem)] w-full flex-col items-center justify-center overflow-hidden px-4 py-16 sm:px-6 lg:px-8">
       <HeroAnimatedBackground />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-10 text-center">
         <motion.div
-          className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left"
+          className="flex flex-col items-center"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={itemVariants} className="mb-8">
-            <div
-              className={cn(
-                "relative flex h-24 w-24 items-center justify-center rounded-2xl border border-border/80",
-                "bg-linear-to-br from-cyan-500/10 via-background to-violet-500/10 shadow-lg backdrop-blur-sm",
-                "dark:from-cyan-400/15 dark:to-violet-400/15",
-              )}
-            >
-              <Music2
-                className="h-10 w-10 text-[#1DB954]"
-                strokeWidth={1.5}
-                aria-hidden
-              />
-            </div>
-          </motion.div>
-
           <motion.h1
             variants={itemVariants}
-            className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
+            className="max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
           >
-            {SITE.name}
+            <span className="block">Tell me what you listen to,</span>
+            <span className="mt-2 block bg-linear-to-r from-cyan-500 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent dark:from-cyan-300 dark:via-violet-300 dark:to-fuchsia-300">
+              I&apos;ll tell you who you are.
+            </span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="mt-4 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl"
+            className="mt-5 text-lg font-medium text-foreground sm:text-xl"
           >
-            {SITE.tagline}
+            3 分鐘生成你的音樂人格
           </motion.p>
 
-          <motion.div variants={itemVariants} className="mt-10">
+          {analyzedCount !== null ? (
+            <motion.p
+              variants={itemVariants}
+              className="mt-2 font-mono text-sm tabular-nums text-muted-foreground"
+            >
+              已分析 {analyzedCount.toLocaleString("zh-TW")} 人
+            </motion.p>
+          ) : null}
+
+          <motion.div variants={itemVariants} className="mt-8">
             <MotionLink
               href="/spotify"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
                 "group inline-flex h-12 items-center justify-center gap-2 rounded-full px-8",
-                "bg-primary text-sm font-semibold text-primary-foreground shadow-lg",
-                "transition-shadow hover:shadow-cyan-500/25 dark:hover:shadow-cyan-400/20",
+                "bg-[#1DB954] text-sm font-semibold text-white shadow-lg",
+                "transition-shadow hover:shadow-[#1DB954]/35",
               )}
             >
-              用 Spotify 解鎖音樂人格
+              用 Spotify 開始分析
               <ArrowRight
                 className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
                 aria-hidden
@@ -89,9 +88,7 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
 
-        <div className="w-full shrink-0 lg:w-auto">
-          <HeroPersonalityPreview />
-        </div>
+        <HeroPersonalityCarousel />
       </div>
     </section>
   );

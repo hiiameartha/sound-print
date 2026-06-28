@@ -36,19 +36,14 @@ function isEveningHour(date: Date): boolean {
 
 function computeEveningPlaybackRatio(
   recentlyPlayedTracks: SpotifyListeningData["recentlyPlayedTracks"],
-  playedAtByTrackId: Map<string, string> | undefined,
 ): number | null {
-  if (!playedAtByTrackId || playedAtByTrackId.size === 0) return null;
-
   let evening = 0;
   let total = 0;
 
-  for (const track of recentlyPlayedTracks) {
-    if (!track.id) continue;
-    const playedAt = playedAtByTrackId.get(track.id);
-    if (!playedAt) continue;
+  for (const entry of recentlyPlayedTracks) {
+    if (!entry.playedAt) continue;
     total += 1;
-    if (isEveningHour(new Date(playedAt))) evening += 1;
+    if (isEveningHour(new Date(entry.playedAt))) evening += 1;
   }
 
   if (total === 0) return null;
@@ -101,7 +96,9 @@ function languageRatio(
 function detectDominantLanguageTrend(
   data: SpotifyListeningData,
 ): { label: string; deltaPercent: number } | null {
-  const recentArtists = data.recentlyPlayedTracks.flatMap((track) => track.artists ?? []);
+  const recentArtists = data.recentlyPlayedTracks.flatMap(
+    (entry) => entry.track.artists ?? [],
+  );
   const baselineArtists = [...data.topArtistsShort, ...data.topArtistsMedium];
 
   let best: { label: string; deltaPercent: number } | null = null;
@@ -132,17 +129,6 @@ function computeEnergyScore(genres: string[]): number {
   return normalize(intense + party * 0.6 - chill * 0.8, -0.5, 0.7);
 }
 
-function explorationPercentile(
-  metrics: ListeningMetrics,
-  input: PersonalityInput,
-): number {
-  const score =
-    metrics.newArtistRatio * 0.45 +
-    metrics.songFreshness * 0.35 +
-    input.exploration * 0.2;
-  return Math.round(normalize(score, 0.08, 0.62) * 88 + 12);
-}
-
 function buildMoodObservation(
   data: SpotifyListeningData,
 ): InsightObservation {
@@ -151,8 +137,8 @@ function buildMoodObservation(
     ...data.topArtistsMedium,
   ]);
   const recentGenres = collectGenres(
-    data.recentlyPlayedTracks.flatMap((track) =>
-      (track.artists ?? []).map((artist) =>
+    data.recentlyPlayedTracks.flatMap((entry) =>
+      (entry.track.artists ?? []).map((artist) =>
         enrichArtistGenres(artist, data.topArtistsShort),
       ),
     ),
@@ -187,8 +173,8 @@ function buildInference(
     ...data.topArtistsMedium,
   ]);
   const recentGenres = collectGenres(
-    data.recentlyPlayedTracks.flatMap((track) =>
-      (track.artists ?? []).map((artist) =>
+    data.recentlyPlayedTracks.flatMap((entry) =>
+      (entry.track.artists ?? []).map((artist) =>
         enrichArtistGenres(artist, data.topArtistsShort),
       ),
     ),
@@ -238,16 +224,13 @@ function buildInference(
 }
 
 export function buildListeningInsights(
-  data: SpotifyListeningData & { playedAtByTrackId?: Map<string, string> },
+  data: SpotifyListeningData,
   input: PersonalityInput,
   metrics: ListeningMetrics,
 ): ListeningInsights {
   const observations: InsightObservation[] = [];
 
-  const eveningRatio = computeEveningPlaybackRatio(
-    data.recentlyPlayedTracks,
-    data.playedAtByTrackId,
-  );
+  const eveningRatio = computeEveningPlaybackRatio(data.recentlyPlayedTracks);
   if (eveningRatio !== null) {
     observations.push({
       category: "habit",
@@ -279,15 +262,6 @@ export function buildListeningInsights(
   }
 
   observations.push(buildMoodObservation(data));
-
-  const percentile = explorationPercentile(metrics, input);
-  observations.push({
-    category: "exploration",
-    headline:
-      percentile >= 55
-        ? `高於 ${percentile}% 使用者`
-        : `約在同齡 ${percentile}% 區間`,
-  });
 
   return {
     observations,

@@ -1,6 +1,7 @@
 import type { SpotifyListeningData } from "@/lib/spotify/api";
 import {
   collectGenres,
+  genreEntropy,
   genreMatchRatio,
   GENRE_SIGNALS,
   repeatListeningRatio,
@@ -51,26 +52,6 @@ function detectLanguageGroups(
   return [...groups];
 }
 
-function genreEntropy(genres: string[]): number {
-  if (genres.length === 0) return 0;
-
-  const counts = new Map<string, number>();
-  for (const genre of genres) {
-    counts.set(genre, (counts.get(genre) ?? 0) + 1);
-  }
-
-  const total = genres.length;
-  let entropy = 0;
-  for (const count of counts.values()) {
-    const p = count / total;
-    entropy -= p * Math.log2(p);
-  }
-
-  const maxEntropy = Math.log2(counts.size);
-  if (maxEntropy <= 0) return 0;
-  return entropy / maxEntropy;
-}
-
 export type ListeningMetrics = {
   newArtistRatio: number;
   languageSpan: number;
@@ -101,8 +82,8 @@ export function computeListeningMetrics(
   );
 
   const recentArtistIds = unique(
-    recentlyPlayedTracks.flatMap((track) =>
-      (track.artists ?? [])
+    recentlyPlayedTracks.flatMap((entry) =>
+      (entry.track.artists ?? [])
         .map((artist) => artist?.id)
         .filter((id): id is string => typeof id === "string"),
     ),
@@ -120,7 +101,7 @@ export function computeListeningMetrics(
       .filter((id): id is string => typeof id === "string"),
   );
   const recentTrackIds = recentlyPlayedTracks
-    .map((track) => track.id)
+    .map((entry) => entry.track.id)
     .filter((id): id is string => typeof id === "string");
   const freshTrackCount = recentTrackIds.filter(
     (id) => !topTrackIds.has(id),
@@ -132,8 +113,8 @@ export function computeListeningMetrics(
     ...collectGenres(topArtistsShort),
     ...collectGenres(topArtistsMedium),
     ...collectGenres(
-      recentlyPlayedTracks.flatMap((track) =>
-        (track.artists ?? []).map((artist) => ({
+      recentlyPlayedTracks.flatMap((entry) =>
+        (entry.track.artists ?? []).map((artist) => ({
           genres: topArtistsShort.find((a) => a.id === artist?.id)?.genres,
         })),
       ),
@@ -143,7 +124,7 @@ export function computeListeningMetrics(
   const languageSpan = detectLanguageGroups([
     ...topArtistsShort,
     ...topArtistsMedium,
-    ...recentlyPlayedTracks.flatMap((track) => track.artists ?? []),
+    ...recentlyPlayedTracks.flatMap((entry) => entry.track.artists ?? []),
   ]).length;
 
   return {

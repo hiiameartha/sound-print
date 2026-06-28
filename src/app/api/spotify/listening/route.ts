@@ -22,10 +22,7 @@ export async function GET() {
 
   try {
     const listening = await fetchSpotifyListeningData(accessToken);
-    const summary = formatSpotifyListeningSummary(
-      listening,
-      listening.playedAtByTrackId,
-    );
+    const summary = formatSpotifyListeningSummary(listening);
 
     return NextResponse.json({ summary });
   } catch (err) {

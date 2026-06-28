@@ -1,8 +1,4 @@
-export type InsightObservationCategory =
-  | "habit"
-  | "recent"
-  | "mood"
-  | "exploration";
+export type InsightObservationCategory = "habit" | "recent" | "mood";
 
 export const INSIGHT_CATEGORY_LABELS: Record<
   InsightObservationCategory,
@@ -11,7 +7,6 @@ export const INSIGHT_CATEGORY_LABELS: Record<
   habit: "你有",
   recent: "最近",
   mood: "情緒",
-  exploration: "新歌探索",
 };
 
 export type InsightObservation = {

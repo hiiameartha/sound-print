@@ -25,11 +25,6 @@ export function PersonalityTraitCards({
     <div className="space-y-3">
       <div className="flex items-baseline justify-between gap-2 px-1">
         <p className="text-sm font-medium">六維度數值</p>
-        {traitBreakdowns ? (
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            含聆聽證據
-          </p>
-        ) : null}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">

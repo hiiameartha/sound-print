@@ -12,7 +12,7 @@ import {
 import type { PersonalityInput } from "@/features/personality/types/personality-input";
 import type { SpotifyListeningData } from "@/lib/spotify/api";
 
-export const PERSONALITY_ENGINE_VERSION = "1.0.0";
+export const PERSONALITY_ENGINE_VERSION = "2.0.0";
 
 export type PersonalityAnalysisResult = {
   profile: PersonalityProfile;

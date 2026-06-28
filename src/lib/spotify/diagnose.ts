@@ -1,5 +1,6 @@
 import { spotifyToPersonalityInput } from "@/features/personality/engine/adapters/spotify-to-personality-input";
 import type {
+  RecentlyPlayedEntry,
   SpotifyArtist,
   SpotifyListeningData,
   SpotifyTrack,
@@ -46,14 +47,14 @@ function countTracksMissingPopularity(tracks: SpotifyTrack[]): number {
     .length;
 }
 
-function countRecentArtistIds(tracks: SpotifyTrack[]): {
+function countRecentArtistIds(entries: RecentlyPlayedEntry[]): {
   withId: number;
   withoutId: number;
 } {
   let withId = 0;
   let withoutId = 0;
-  for (const track of tracks) {
-    const ids = (track.artists ?? [])
+  for (const entry of entries) {
+    const ids = (entry.track.artists ?? [])
       .map((a) => a?.id)
       .filter((id): id is string => typeof id === "string");
     if (ids.length > 0) withId += 1;
@@ -175,6 +176,31 @@ export function diagnoseSpotifyListeningData(
   }
 
   const personalityInput = spotifyToPersonalityInput(data);
+
+  const audioFeatureCount = Object.keys(data.audioFeaturesByTrackId).length;
+  const candidateTrackCount = new Set([
+    ...topTracksShort.map((track) => track.id),
+    ...recentlyPlayedTracks.map((entry) => entry.track.id),
+  ]).size;
+
+  if (candidateTrackCount > 0 && audioFeatureCount === 0) {
+    issues.push({
+      field: "audioFeatures",
+      severity: "empty",
+      message:
+        "無法取得 audio features（valence / energy 會改用曲風 proxy）",
+      count: 0,
+      total: candidateTrackCount,
+    });
+  } else if (audioFeatureCount > 0 && audioFeatureCount < candidateTrackCount) {
+    issues.push({
+      field: "audioFeatures",
+      severity: "partial",
+      message: "部分曲目缺少 audio features",
+      count: audioFeatureCount,
+      total: candidateTrackCount,
+    });
+  }
 
   if (personalityInput.genreCount === 0 && allArtists.length > 0) {
     issues.push({

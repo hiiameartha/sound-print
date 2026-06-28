@@ -98,3 +98,44 @@ export function repeatListeningRatio(
   const repeats = recentTrackIds.filter((id) => topSet.has(id)).length;
   return repeats / recentTrackIds.length;
 }
+
+export function genreEntropy(genres: string[]): number {
+  if (genres.length === 0) return 0;
+
+  const counts = new Map<string, number>();
+  for (const genre of genres) {
+    counts.set(genre, (counts.get(genre) ?? 0) + 1);
+  }
+
+  const total = genres.length;
+  let entropy = 0;
+  for (const count of counts.values()) {
+    const p = count / total;
+    entropy -= p * Math.log2(p);
+  }
+
+  const maxEntropy = Math.log2(counts.size);
+  if (maxEntropy <= 0) return 0;
+  return entropy / maxEntropy;
+}
+
+export function releaseAgeYears(releaseDate: string | undefined): number | null {
+  if (!releaseDate) return null;
+
+  const year = Number.parseInt(releaseDate.slice(0, 4), 10);
+  if (!Number.isFinite(year) || year < 1900) return null;
+
+  const nowYear = new Date().getFullYear();
+  return Math.max(0, nowYear - year);
+}
+
+export function averageReleaseAgeYears(
+  releaseDates: (string | undefined)[],
+): number | null {
+  const ages = releaseDates
+    .map((date) => releaseAgeYears(date))
+    .filter((age): age is number => age !== null);
+
+  if (ages.length === 0) return null;
+  return average(ages);
+}

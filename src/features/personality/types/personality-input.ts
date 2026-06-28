@@ -1,3 +1,5 @@
+import type { TraitSignalMap } from "@/features/personality/engine/utils/trait-signals";
+
 /**
  * Provider-agnostic listening signals.
  * Populated by adapters (e.g. Spotify); consumed by trait scorers and archetype rules.
@@ -10,7 +12,10 @@ export type PersonalityInput = {
 
   allGenres: string[];
 
-  /** Genre tag hit ratios (0–1) */
+  /** Weighted 4-source signals (0–1) per trait, normalized before scoring */
+  traitSignals: TraitSignalMap;
+
+  /** Genre tag hit ratios (0–1) — kept for archetype rules */
   chillRatio: number;
   partyRatio: number;
   romanticGenreRatio: number;
